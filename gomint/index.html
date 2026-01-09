@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoMint - Modern Cashback Platform</title>
+  <style>
+    /* Modern CSS Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1a202c;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: #4a5568;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+    }
+
+    nav a:hover {
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* Main Content */
+    main {
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+      padding: 8rem 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 4rem;
+    }
+
+    .hero-content {
+      flex: 1;
+      color: white;
+    }
+
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      margin-bottom: 2.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 500px;
+      line-height: 1.7;
+    }
+
+    .hero-image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .hero-image img:hover {
+      transform: translateY(-5px) scale(1.02);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      margin-right: 1rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* Additional button and country selector rules (merged) */
+    .btn,
+    button {
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn:hover,
+    button:hover {
+      background-color: #f80b0b;
+      box-shadow: 0 4px 12px rgba(12, 11, 20, 0.15);
+    }
+
+    .btn.secondary {
+      background-color: #007bff;
+    }
+
+    .btn.secondary:hover {
+      background-color: #0056b3;
+    }
+
+    /* Country Selector */
+    .country-selector {
+      position: relative;
+      width: 100px;
+      cursor: pointer;
+      height: 48px;
+      display: flex;
+    }
+
+    .selected-country {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .selected-country::after {
+      content: "";
+      display: inline-block;
+      width: 0;
+      height: 0;
+      margin-left: 6px;
+      vertical-align: middle;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid #666;
+    }
+
+    .selected-country img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .selected-country span {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .country-list {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      border: 1px solid #ccc;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .country-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0px;
+      margin-left: -13px;
+    }
+
+    .country-list li:hover {
+      background-color: #f0f0f0;
+    }
+
+    .country-list li.selected {
+      background-color: #e0f7fa;
+      font-weight: bold;
+    }
+
+    .country-list img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+      margin-left: -25px;
+    }
+
+    .nav-link {
+      text-decoration: underline;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .nav-link:hover {
+      color: #007bff;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 4rem 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 1rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+        text-align: center;
+        padding: 6rem 1rem 2rem;
+        gap: 2rem;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-content p {
+        font-size: 1.1rem;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0;
+        text-align: center;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-content,
+    .hero-image,
+    .features {
+      animation: fadeInUp 0.8s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">GoMint</div>
+    <nav>
+      <a href="businessPromo.html">Business Login</a>
+      <a href="customerLogin.html">Customer Login</a>
+      <a href="OperatorLogin.html">Operator Login</a>
+
+
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <div class="hero-content">
+      <h1>Earn More with Extra Cashback</h1>
+      <p>Get rewarded for every commute, meal, shopping, and grocery trip. Turn your everyday spending into real savings
+        with GoMint's smart cashback platform.</p>
+      <div>
+        <a href="businessPromo.html" class="btn-secondary">Business Login</a>
+        <a href="customerLogin.html" class="btn-secondary">Customer Login</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img
+        src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+        alt="Modern cashback rewards illustration" />
+    </div>
+  </main>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2>Why Choose GoMint?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <h3>Maximum Cashback</h3>
+        <p>Earn up to 20% cashback on everyday purchases across thousands of partner stores and restaurants.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Instant Rewards</h3>
+        <p>Get your cashback credited instantly to your account. No waiting periods or complicated redemption processes.
+        </p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏪</span>
+        <h3>Partner Network</h3>
+        <p>Access exclusive deals and offers from top brands in food, retail, transportation, and entertainment.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📱</span>
+        <h3>Easy Tracking</h3>
+        <p>Monitor your rewards, view transaction history, and manage your account from anywhere with our mobile app.
+        </p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>Secure & Trusted</h3>
+        <p>Your data is protected with bank-level security. Trusted by millions of users worldwide.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🌍</span>
+        <h3>Global Access</h3>
+        <p>Available in multiple countries with local currency support and region-specific offers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modern JavaScript -->
+  <script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add loading animation
+    window.addEventListener('load', function () {
+      document.body.classList.add('loaded');
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe feature cards
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(30px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+  </script>
+</body>
+
+</html>

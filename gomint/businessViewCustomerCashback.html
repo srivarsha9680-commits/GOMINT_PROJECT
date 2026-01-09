@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoMint - View Customer Cashback</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #ff6b35;
+            --text-color: #1a202c;
+            --bg-color: #f7fafc;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --border-radius: 1rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        main {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cashback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filters select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: white;
+        }
+
+        .cashback-header h2 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .cashback-table {
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .cashback-table th,
+        .cashback-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cashback-table th {
+            background: rgba(102, 126, 234, 0.1);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .cashback-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">GoMint</div>
+        <div class="header-buttons">
+            <a href="businessAddCustomerCashback.html" class="btn">Add Customer Cashback</a>
+            <a href="businessViewInvoices.html" class="btn">View Invoices</a>
+            <a href="businessViewOffers.html" class="btn">Back to Offers</a>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="cashback-header">
+
+            <div class="filters">
+                <select id="businessSelect">
+                    <option value="">Select Business</option>
+                </select>
+                <select id="locationSelect">
+                    <option value="">Select Location</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="cashback-table" id="cashbackTable">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Cashback Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Cashback items will be loaded here -->
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        let allCashback = [];
+        let businesses = [];
+        let locations = [];
+
+        async function loadBusinesses() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:3001/api/vendors', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    businesses = await response.json();
+                    const select = document.getElementById('businessSelect');
+                    select.innerHTML = '<option value="">All Businesses</option>';
+                    businesses.forEach(business => {
+                        select.innerHTML += `<option value="${business._id}">${business.businessName}</option>`;
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading businesses:', err);
+            }
+        }
+
+        async function loadLocations() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:3001/api/locations', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    locations = await response.json();
+                    const select = document.getElementById('locationSelect');
+                    select.innerHTML = '<option value="">Select Location</option><option value="">All Locations</option>';
+                    locations.forEach(location => {
+                        select.innerHTML += `<option value="${location._id}">${location.name}</option>`;
+                    });
+                    select.innerHTML += '<option value="bayside">Bay Side</option><option value="anyother">Any Other</option><option value="head">Head Office</option><option value="warehouse">Warehouse</option>';
+                }
+            } catch (err) {
+                console.error('Error loading locations:', err);
+            }
+        }
+
+        async function loadCashback() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:3001/api/invoices', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const invoices = await response.json();
+
+                    // Flatten cashback from all invoices
+                    allCashback = [];
+                    invoices.forEach(invoice => {
+                        if (invoice.cashbackList && invoice.cashbackList.length > 0) {
+                            invoice.cashbackList.forEach(cashback => {
+                                allCashback.push({
+                                    invoiceId: invoice._id,
+                                    vendorId: invoice.vendorId,
+                                    locationId: invoice.locationId,
+                                    customerName: cashback.mobile, // Assuming mobile as name for now
+                                    amount: cashback.amount
+                                });
+                            });
+                        }
+                    });
+
+                    displayCashback();
+                } else {
+                    document.querySelector('#cashbackTable tbody').innerHTML = '<tr><td colspan="2">Failed to load cashback data.</td></tr>';
+                }
+            } catch (err) {
+                document.querySelector('#cashbackTable tbody').innerHTML = '<tr><td colspan="2">Error: ' + err.message + '</td></tr>';
+            }
+        }
+
+        function displayCashback() {
+            const businessId = document.getElementById('businessSelect').value;
+            const locationId = document.getElementById('locationSelect').value;
+
+            const filtered = allCashback.filter(cashback => {
+                return (!businessId || cashback.vendorId === businessId) &&
+                    (!locationId || cashback.locationId === locationId);
+            });
+
+            const tbody = document.querySelector('#cashbackTable tbody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2">No cashback rewards found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(cashback => `
+                <tr>
+                    <td>${cashback.customerName}</td>
+                    <td>$${cashback.amount.toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('businessSelect').addEventListener('change', function () {
+            const businessId = this.value;
+            if (businessId) {
+                loadLocations(businessId);
+            } else {
+                document.getElementById('locationSelect').innerHTML = '<option value="">Select Location</option><option value="">All Locations</option><option value="bayside">Bay Side</option><option value="anyother">Any Other</option><option value="head">Head Office</option><option value="warehouse">Warehouse</option>';
+            }
+            displayCashback();
+        });
+
+        document.getElementById('locationSelect').addEventListener('change', displayCashback);
+
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'businessLogin.html';
+        }
+
+        // Load data on page load
+        loadBusinesses();
+        loadCashback();
+    </script>
+</body>
+
+</html>

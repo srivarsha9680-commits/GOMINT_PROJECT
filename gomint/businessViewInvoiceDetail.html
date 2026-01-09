@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoMint - View Invoice Detail</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #ff6b35;
+            --text-color: #1a202c;
+            --bg-color: #f7fafc;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --border-radius: 1rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        main {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .invoice-detail {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .invoice-detail h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .invoice-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .back-btn {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">GoMint</div>
+    </header>
+
+    <main>
+        <div class="invoice-detail">
+            <h2>Invoice Detail</h2>
+            <div class="invoice-info" id="invoiceInfo">
+                <!-- Invoice details will be loaded here -->
+            </div>
+            <div class="buttons">
+                <a href="businessViewInvoices.html" class="btn btn-secondary">Back to Invoices</a>
+                <button class="btn" onclick="updateStatus()">Update Status</button>
+                <button class="btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function loadInvoiceDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const invoiceId = urlParams.get('id');
+
+            if (!invoiceId) {
+                document.getElementById('invoiceInfo').innerHTML = '<p>Invoice ID not provided.</p>';
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:3001/api/invoices/${invoiceId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const invoice = await response.json();
+                    const invoiceDate = new Date(invoice.invoiceDate).toLocaleDateString();
+
+                    document.getElementById('invoiceInfo').innerHTML = `
+                        <div class="info-item">
+                            <label>Invoice Number</label>
+                            <span>${invoice.invoiceNumber}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Invoice Date</label>
+                            <span>${invoiceDate}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Business Detail</label>
+                            <span>Demo Business</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Operator Name</label>
+                            <span>${invoice.operatorName || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <span>${invoice.operatorEmail || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Payment Status</label>
+                            <span>${invoice.paymentStatus}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Total Amount</label>
+                            <span>$${invoice.totalAmount.toFixed(2)}</span>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('invoiceInfo').innerHTML = '<p>Failed to load invoice details.</p>';
+                }
+            } catch (err) {
+                document.getElementById('invoiceInfo').innerHTML = '<p>Error: ' + err.message + '</p>';
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'businessLogin.html';
+        }
+
+        async function updateStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const invoiceId = urlParams.get('id');
+
+            if (!invoiceId) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`http://localhost:3001/api/invoices/${invoiceId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ paymentStatus: 'paid' })
+                });
+
+                if (response.ok) {
+                    alert('Status updated successfully!');
+                    loadInvoiceDetail(); // Reload details
+                } else {
+                    alert('Failed to update status.');
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        // Load invoice detail on page load
+        loadInvoiceDetail();
+    </script>
+</body>
+
+</html>

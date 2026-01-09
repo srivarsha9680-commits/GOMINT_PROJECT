@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Location - GoMint</title>
+
+  <style>
+    :root {
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --accent-color: #ff6b35;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --border-radius: 1rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, sans-serif;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-color);
+      font-size: 1rem;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 1rem 1.5rem;
+      border-radius: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      min-width: 150px;
+    }
+
+    .btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      opacity: 0.9;
+    }
+
+    .save-btn {
+      background: linear-gradient(135deg, var(--accent-color), #f7931e);
+      color: #fff;
+    }
+
+    .cancel-btn {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Add Location</h1>
+
+    <form id="locationForm">
+
+      <!-- BUSINESS (ONLY TWO OPTIONS) -->
+      <div class="form-group">
+        <label>Business</label>
+        <select id="business" required>
+          <option value="">Select Business</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Location Name</label>
+        <input id="locationName" required />
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <input id="address" required />
+      </div>
+
+      <div class="form-group">
+        <label>City</label>
+        <input id="city" required />
+      </div>
+
+      <div class="form-group">
+        <label>State</label>
+        <input id="state" required />
+      </div>
+
+      <div class="form-group">
+        <label>Country</label>
+        <select id="country" required>
+          <option value="">Select Country</option>
+          <option>India</option>
+          <option>United States</option>
+          <option>Canada</option>
+          <option>Australia</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Postal Code</label>
+        <input id="postalCode" required />
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input id="phone" required />
+      </div>
+
+      <div class="buttons">
+        <button class="btn save-btn" type="submit">Save</button>
+        <button class="btn cancel-btn" type="button" onclick="cancel()">Cancel</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3001/api";
+
+    // Populate vendor/business select from backend
+    async function loadVendors() {
+      try {
+        const res = await fetch(`${API_BASE}/vendors`);
+        if (!res.ok) return console.warn('Could not load vendors');
+        const vendors = await res.json();
+        const sel = document.getElementById('business');
+        // remove any existing options
+        sel.innerHTML = '';
+        if (!vendors || vendors.length === 0) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'No vendors found';
+          opt.disabled = true;
+          sel.appendChild(opt);
+          return;
+        }
+        vendors.forEach(v => {
+          const name = v.businessName || v.name || '';
+          if (name.toLowerCase() === 'demo business' || name.toLowerCase() === 'gomint') return;
+          const opt = document.createElement('option');
+          opt.value = v._id || v.id || '';
+          opt.textContent = name || `Vendor ${opt.value}`;
+          sel.appendChild(opt);
+        });
+        // Add two more options
+        const opt1 = document.createElement('option');
+        opt1.value = '507f1f77bcf86cd799439011';
+        opt1.textContent = 'Tech Solutions Ltd';
+        sel.appendChild(opt1);
+        const opt2 = document.createElement('option');
+        opt2.value = '507f1f77bcf86cd799439012';
+        opt2.textContent = 'Global Foods Inc';
+        sel.appendChild(opt2);
+        // Additional option requested by user, only if not already present
+        const existingGomint = Array.from(sel.options).some(opt => opt.textContent.toLowerCase() === 'gomint');
+        if (!existingGomint) {
+          const extraOpt = document.createElement('option');
+          extraOpt.value = 'GOMINT';
+          extraOpt.textContent = 'Gomint';
+          sel.appendChild(extraOpt);
+        }
+      } catch (err) {
+        console.warn('Failed to load vendors', err);
+      }
+    }
+
+    document.getElementById("locationForm").addEventListener("submit", submitLocation);
+
+    async function submitLocation(e) {
+      e.preventDefault();
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You must be logged in to add a location.");
+        window.location.href = "businessLogin.html";
+        return;
+      }
+
+      // Validate vendor selection
+      if (!business.value) {
+        alert('Please select a business/vendor from the dropdown.');
+        return;
+      }
+
+      // If user chose the special 'Gomint' option, redirect them to registration
+      if (business.value === 'GOMINT') {
+        const go = confirm('You selected "Gomint". Open business registration page now?');
+        if (go) window.location.href = 'businessRegister.html';
+        return;
+      }
+
+      // Ensure vendorId is a valid MongoDB ObjectId (24 hex chars)
+      const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+      if (!objectIdRegex.test(business.value)) {
+        alert('Invalid vendor selected. Please choose a valid business from the list.');
+        return;
+      }
+
+      const data = {
+        vendorId: business.value,
+        name: locationName.value.trim(),
+        address: address.value.trim(),
+        city: city.value.trim(),
+        state: state.value.trim(),
+        country: country.value,
+        postalCode: postalCode.value.trim(),
+        phone: phone.value.trim()
+      };
+
+      // Basic validation
+      for (const key in data) {
+        if (!data[key]) {
+          alert("Please fill all fields");
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/locations`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) {
+          let errMsg = "Failed to add location";
+          try {
+            const err = await res.json();
+            errMsg = err.message || err.error || errMsg;
+          } catch (e) {
+            // ignore JSON parse errors
+          }
+          throw new Error(errMsg);
+        }
+
+        alert("Location added successfully");
+        window.location.href = "businessViewLocations.html";
+
+      } catch (err) {
+        if (String(err.message).toLowerCase().includes('failed to fetch')) {
+          alert('Unable to reach backend server. Make sure the server is running and CORS is allowed.');
+        } else {
+          alert(err.message || 'An error occurred');
+        }
+        console.error(err);
+      }
+    }
+
+    function cancel() {
+      window.location.href = "businessViewLocations.html";
+    }
+
+    // Load vendors on page load
+    window.addEventListener('DOMContentLoaded', loadVendors);
+  </script>
+
+</body>
+
+</html>

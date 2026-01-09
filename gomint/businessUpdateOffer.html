@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoMint - Update Offer</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #ff6b35;
+            --text-color: #1a202c;
+            --bg-color: #f7fafc;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --border-radius: 1rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        main {
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-container p {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+        .offer-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .offer-form input,
+        .offer-form select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            background: #ffffff;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .offer-form input:focus,
+        .offer-form select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* === ONLY UPDATED ROWS === */
+        .row {
+            display: flex;
+            gap: 1rem;
+            /* more horizontal space between fields */
+        }
+
+        .row .field {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .row .field label {
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        /* ==================================== */
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">GoMint</div>
+    </header>
+
+    <main>
+        <div class="form-container">
+
+            <p>Edit offer details</p>
+
+            <form class="offer-form">
+                <!-- OTHER FIELDS UNCHANGED -->
+                <label>Offer Name</label>
+                <input type="text" name="name" required />
+
+                <label>Brand</label>
+                <input type="text" name="brand" required />
+
+                <label>Category</label>
+                <select name="category" required>
+                    <option value="shopping" selected>Shopping</option>
+                    <option value="dining">Dining</option>
+                    <option value="travel">Travel</option>
+                    <option value="entertainment">Entertainment</option>
+                </select>
+
+                <!-- UPDATED ROWS ONLY -->
+                <div class="row">
+                    <div class="field">
+                        <label>Start Date</label>
+                        <input type="date" name="startDate" required />
+                    </div>
+                    <div class="field">
+                        <label>End Date</label>
+                        <input type="date" name="endDate" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label>Min Amount</label>
+                        <input type="number" name="minAmount" step="0.01" required />
+                    </div>
+                    <div class="field">
+                        <label>Max Amount</label>
+                        <input type="number" name="maxAmount" step="0.01" required />
+                    </div>
+                </div>
+                <!-- END OF UPDATED ROWS -->
+
+                <label>Cashback Percent</label>
+                <input type="number" name="cashbackPercent" step="0.1" required />
+
+                <div class="buttons">
+                    <button type="submit" class="btn">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE = "http://localhost:3001/api";
+
+            // Get offer ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const offerId = urlParams.get('id') || '695a0df54671d8470d3c6f5a'; // fallback to seeded
+
+            // Load offer data
+            async function loadOffer() {
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`${API_BASE}/offers/${offerId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!res.ok) throw new Error('Failed to load offer');
+
+                    const offer = await res.json();
+
+                    // Populate form
+                    document.querySelector('input[name="name"]').value = offer.name || '';
+                    document.querySelector('input[name="brand"]').value = offer.brand || '';
+                    document.querySelector('select[name="category"]').value = offer.category || '';
+                    document.querySelector('input[name="startDate"]').value = offer.startDate ? offer.startDate.split('T')[0] : '';
+                    document.querySelector('input[name="endDate"]').value = offer.endDate ? offer.endDate.split('T')[0] : '';
+                    document.querySelector('input[name="minAmount"]').value = offer.minAmount || '';
+                    document.querySelector('input[name="maxAmount"]').value = offer.maxAmount || '';
+                    document.querySelector('input[name="cashbackPercent"]').value = offer.cashbackPercent || '';
+
+                } catch (err) {
+                    alert('Error loading offer: ' + (err.message || 'Unknown error'));
+                    console.error(err);
+                }
+            }
+
+            loadOffer();
+
+            // Handle form submission
+            document.querySelector('.offer-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+                const data = {
+                    name: formData.get('name'),
+                    brand: formData.get('brand'),
+                    category: formData.get('category'),
+                    startDate: formData.get('startDate'),
+                    endDate: formData.get('endDate'),
+                    minAmount: parseFloat(formData.get('minAmount')),
+                    maxAmount: parseFloat(formData.get('maxAmount')),
+                    cashbackPercent: parseFloat(formData.get('cashbackPercent'))
+                };
+
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${API_BASE}/offers/${offerId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        alert('Offer updated successfully!');
+                        window.location.href = 'businessViewOffers.html';
+                    } else {
+                        let errorMsg = 'Unknown error';
+                        try {
+                            const error = await response.json();
+                            errorMsg = error.error || error.message || 'Server error';
+                        } catch {
+                            errorMsg = 'Failed to parse error response';
+                        }
+                        alert('Error: ' + errorMsg);
+                    }
+                } catch (err) {
+                    alert('Error: ' + (err.message || 'Network error'));
+                }
+            });
+        });
+
+        function cancel() {
+            window.location.href = 'businessViewOffers.html';
+        }
+    </script>
+</body>
+
+</html>

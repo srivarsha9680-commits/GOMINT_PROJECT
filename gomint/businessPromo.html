@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoMint - Business Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --accent-color: #ff6b35;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --background-color: #f8fafc;
+      --card-background: rgba(255, 255, 255, 0.95);
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --border-radius: 1rem;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1rem;
+    }
+
+    /* Country Selector */
+    .country-selector {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .selected-country {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: white;
+      border: 2px solid var(--border-color);
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+    }
+
+    .selected-country:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .selected-country::after {
+      content: '▼';
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .selected-country.open::after {
+      transform: rotate(180deg);
+    }
+
+    .selected-country img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .selected-country span {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .country-list {
+      display: none;
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      right: 0;
+      background: white;
+      border: 2px solid var(--border-color);
+      border-radius: 0.75rem;
+      min-width: 150px;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .country-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .country-list li:hover {
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .country-list li.selected {
+      background: rgba(102, 126, 234, 0.1);
+      font-weight: 600;
+    }
+
+    .country-list img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    /* Main Content */
+    main {
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+      padding: 8rem 2rem 2rem;
+      gap: 4rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .content-section {
+      flex: 1;
+      max-width: 50%;
+    }
+
+    .content-section h2 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .content-section p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .image-section {
+      flex: 1;
+      max-width: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--border-radius);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    .hero-image:hover {
+      transform: scale(1.02);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      main {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+        padding: 6rem 1rem 2rem;
+      }
+
+      .content-section,
+      .image-section {
+        max-width: 100%;
+      }
+
+      .content-section h2 {
+        font-size: 2.5rem;
+      }
+
+      .content-section p {
+        font-size: 1.1rem;
+      }
+
+      .button-group {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .header-right {
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      nav {
+        gap: 1rem;
+      }
+
+      .content-section h2 {
+        font-size: 2rem;
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <!-- Logo -->
+    <a href="index.html" class="logo">GoMint</a>
+
+    <!-- Country Selector + Navigation -->
+    <div class="header-right">
+      <!-- Country selector -->
+      <div class="country-selector">
+        <div class="selected-country">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1024px-Flag_of_the_United_States.svg.png"
+            alt="USA" />
+          <span>USA</span>
+        </div>
+        <ul class="country-list">
+          <li>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_India.svg/800px-Flag_of_India.svg.png"
+              alt="India" />
+            <span>India</span>
+          </li>
+          <li>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/330px-Flag_of_the_United_Kingdom.svg.png"
+              alt="UK" />
+            <span>UK</span>
+          </li>
+          <li>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1200px-Flag_of_Canada_%28Pantone%29.svg.png"
+              alt="Canada" />
+            <span>Canada</span>
+          </li>
+          <li>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Germany.svg/2560px-Flag_of_Germany.svg.png"
+              alt="Germany" />
+            <span>Germany</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Top right navigation -->
+      <nav>
+        <a href="index.html">Home</a>
+
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="content-section">
+      <h2>A digital marketplace connecting you to the real world</h2>
+      <p>GoMint brings customers straight to your store. Reach more customers. Increase sales. Grow your profits.</p>
+      <div class="button-group">
+        <a href="businessRegister.html" class="btn">Register</a>
+        <a href="businessLogin.html" class="btn btn-secondary">Already a Business? Login</a>
+      </div>
+
+    </div>
+
+    <div class="image-section">
+      <img
+        src="https://static.coretava.com/cms/The_Ultimate_Guide_to_Building_a_Customer_Loyalty_Program_in_2023_700cb8798a.jpg"
+        alt="GoMint Business Solutions" class="hero-image" />
+    </div>
+  </main>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const selector = document.querySelector(".country-selector");
+      const selected = selector.querySelector(".selected-country");
+      const list = selector.querySelector(".country-list");
+
+      selected.addEventListener("click", function () {
+        const isOpen = list.style.display === "block";
+        list.style.display = isOpen ? "none" : "block";
+        selected.classList.toggle("open", !isOpen);
+      });
+
+      // Hide dropdown when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!selector.contains(e.target)) {
+          list.style.display = "none";
+          selected.classList.remove("open");
+        }
+      });
+
+      // Handle country selection
+      list.querySelectorAll("li").forEach(function (item) {
+        item.addEventListener("click", function () {
+          const flag = item.querySelector("img").src;
+          const name = item.querySelector("span").textContent;
+          selected.querySelector("img").src = flag;
+          selected.querySelector("span").textContent = name;
+          list.style.display = "none";
+          selected.classList.remove("open");
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

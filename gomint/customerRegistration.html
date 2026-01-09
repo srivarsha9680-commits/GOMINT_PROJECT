@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Registration</title>
+  <style>
+    :root {
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --accent-color: #ff6b35;
+      --text-color: #1a202c;
+      --bg-color: #f7fafc;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --border-radius: 1rem;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      min-height: 100vh;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    main {
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+      padding: 8rem 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .registration-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 3rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .registration-container h2 {
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .registration-container p {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    .registration-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .row input,
+    .row select {
+      flex: 1;
+    }
+
+    .registration-form input,
+    .registration-form select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      background: #ffffff;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .registration-form input:focus,
+    .registration-form select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .registration-form input::placeholder {
+      color: #a0aec0;
+    }
+
+    .compact-select {
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+    }
+
+    .registration-form button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .registration-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .registration-form button:active {
+      transform: translateY(0);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1rem;
+      color: #4a5568;
+    }
+
+    .login-link a {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">GoMint</div>
+  </header>
+
+  <main>
+    <div class="registration-container">
+
+
+      <form class="registration-form">
+        <div class="row">
+          <input type="text" placeholder="First Name" required />
+          <input type="text" placeholder="Last Name" required />
+        </div>
+
+        <input type="email" placeholder="Email ID" required />
+
+        <div class="row">
+          <select class="compact-select" required>
+            <option value="+91">+91</option>
+            <option value="+1">+1</option>
+            <option value="+44">+44</option>
+            <option value="+61">+61</option>
+            <option value="+49">+49</option>
+          </select>
+          <input type="tel" placeholder="Mobile Number" required />
+        </div>
+
+        <div class="row">
+          <input type="password" placeholder="Password" required />
+          <input type="password" placeholder="Confirm Password" required />
+        </div>
+
+        <button type="button" id="registerBtn">Register</button>
+
+        <p class="login-link">
+          Already have an account?
+          <a href="customerLogin.html">Login</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('registerBtn').addEventListener('click', async () => {
+      const firstName = document.querySelector('input[placeholder="First Name"]').value;
+      const lastName = document.querySelector('input[placeholder="Last Name"]').value;
+      const email = document.querySelector('input[placeholder="Email ID"]').value;
+      const phone = document.querySelector('input[placeholder="Mobile Number"]').value;
+      const password = document.querySelector('input[placeholder="Password"]').value;
+      const confirmPassword = document.querySelector('input[placeholder="Confirm Password"]').value;
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      if (!email || !password || !firstName || !lastName || !phone) {
+        alert('All fields are required');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3001/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: email,
+            password: password,
+            role: 'customer',
+            firstName: firstName,
+            lastName: lastName,
+            mobile: phone
+          })
+        });
+
+        if (response.ok) {
+          alert('Registration successful! Please login.');
+          window.location.href = 'customerLogin.html';
+        } else {
+          const error = await response.json();
+          alert('Registration failed: ' + error.message);
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+  </script>
+</body>
+
+</html>

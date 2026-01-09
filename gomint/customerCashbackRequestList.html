@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Cashback Requests - GoMint</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #ff6b35;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --background-color: #f8fafc;
+            --card-background: rgba(255, 255, 255, 0.95);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --border-radius: 1rem;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Main Content */
+        main {
+            padding: 8rem 2rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            background: var(--card-background);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+
+        th,
+        td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status.approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 2rem;
+        }
+
+        .modal {
+            background: var(--card-background);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-content {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .modal p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .modal .highlight {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--error-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .close-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav {
+                display: none;
+            }
+
+            main {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .table-container {
+                font-size: 0.9rem;
+            }
+
+            th,
+            td {
+                padding: 0.75rem 1rem;
+            }
+
+            .modal {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="logo">GoMint</a>
+        <nav>
+            <a href="customercashBackReward.html">Back to Rewards</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container" id="contentContainer">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <h2>Request Details</h2>
+            <div class="modal-content" id="modalContent">
+                <!-- Modal content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Load requests from localStorage or use sample data
+        function getRequests() {
+            const storedRequests = JSON.parse(localStorage.getItem('cashbackRequests') || '[]');
+            if (storedRequests.length > 0) {
+                return storedRequests;
+            }
+
+            // Fallback to sample data if no stored requests
+            return [
+                {
+                    id: 1,
+                    number: 'REQ-001',
+                    amount: '$180.00',
+                    status: 'pending',
+                    date: '2023-05-01',
+                    details: {
+                        requestDate: '11/11/2022',
+                        type: 'Cashback',
+                        status: 'Pending',
+                        notes: 'Request for cashback on recent purchase',
+                        business: 'TechStore Inc.',
+                        location: 'N/A',
+                        officer: 'N/A',
+                        phone: 'N/A',
+                        invoice: 'INV-12345'
+                    }
+                },
+                {
+                    id: 2,
+                    number: 'REQ-002',
+                    amount: '$50.00',
+                    status: 'approved',
+                    date: '2023-04-15',
+                    details: {
+                        requestDate: '10/25/2022',
+                        type: 'Refund',
+                        status: 'Approved',
+                        notes: 'Refund request for defective product',
+                        business: 'GadgetWorld',
+                        location: 'N/A',
+                        officer: 'N/A',
+                        phone: 'N/A',
+                        invoice: 'INV-67890'
+                    }
+                }
+            ];
+        }
+
+        // Load requests
+        function loadRequests() {
+            const requests = getRequests();
+            const container = document.getElementById('contentContainer');
+
+            if (requests.length === 0) {
+                container.innerHTML = `
+          <div class="empty-state">
+            <h2>No Cashback Requests Found</h2>
+            <p>You haven't submitted any cashback requests yet.</p>
+            <a href="customerCashbackRequest.html" class="btn-primary">Submit Your First Request</a>
+          </div>
+        `;
+                return;
+            }
+
+            container.innerHTML = `
+        <div class="action-buttons">
+          <a href="customerCreateInvoice.html" class="btn-primary">Add Invoice</a>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Request Number</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Request Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requestsTable">
+              <!-- Requests will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      `;
+
+            const tbody = document.getElementById('requestsTable');
+            tbody.innerHTML = '';
+
+            requests.forEach(request => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+          <td>${request.number}</td>
+          <td>${request.amount}</td>
+          <td><span class="status ${request.status}">${request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span></td>
+          <td>${request.date}</td>
+          <td><button onclick="openModal(${request.id})" class="view-btn">View Details</button></td>
+        `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Open modal with request details
+        function openModal(requestId) {
+            const requests = getRequests();
+            const request = requests.find(r => r.id === requestId);
+            if (!request) return;
+
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+        <p><span class="highlight">Request ID:</span> ${request.number}</p>
+        <p><span class="highlight">Amount:</span> ${request.amount}</p>
+        <p><span class="highlight">Request Date:</span> ${request.details.requestDate}</p>
+        <p><span class="highlight">Request Type:</span> ${request.details.type}</p>
+        <p><span class="highlight">Status:</span> ${request.details.status}</p>
+        <p><span class="highlight">Business:</span> ${request.details.business}</p>
+        <p><span class="highlight">Location:</span> ${request.details.location || 'N/A'}</p>
+        <p><span class="highlight">Officer:</span> ${request.details.officer || 'N/A'}</p>
+        <p><span class="highlight">Phone:</span> ${request.details.phone || 'N/A'}</p>
+        <p><span class="highlight">Invoice:</span> ${request.details.invoice}</p>
+        <p><span class="highlight">Notes:</span> ${request.details.notes}</p>
+      `;
+
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRequests();
+
+            // Close modal when clicking overlay
+            document.getElementById('modalOverlay').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('modalOverlay')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

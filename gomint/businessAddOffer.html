@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Offer - GoMint</title>
+  <style>
+    :root {
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --accent-color: #ff6b35;
+      --text-color: #1a202c;
+      --bg-color: #f7fafc;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --border-radius: 1rem;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      min-height: 100vh;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 2rem 0 1rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2.5rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin: 1rem 0 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+      font-size: 0.95rem;
+      color: var(--text-color);
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      background: #ffffff;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    input::placeholder {
+      color: #a0aec0;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .form-row>div {
+      flex: 1;
+    }
+
+    .submit-btn {
+      flex: 1;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .cancel-btn {
+      flex: 1;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--secondary-color) 0%, #5a67d8 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .cancel-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .cancel-btn:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .form-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+</head>
+
+<body>
+
+  <form class="form-container">
+    <!-- Offer Name -->
+    <div class="form-group">
+      <h1>Add Offer</h1>
+      <label>Enter details to add a new offer</label>
+      <input type="text" id="offerName" placeholder="Enter offer name" required />
+    </div>
+
+    <!-- Brand Name -->
+    <div class="form-group">
+      <input type="text" id="brandName" placeholder="Enter brand name" required />
+    </div>
+
+    <!-- Category -->
+    <div class="form-group">
+      <label>Select Category</label>
+      <select id="category" required>
+        <option selected>Electronics</option>
+        <option>Clothing</option>
+        <option>Food</option>
+      </select>
+    </div>
+
+    <!-- Start Date and End Date -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" id="startDate" required />
+      </div>
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" id="endDate" required />
+      </div>
+    </div>
+
+    <!-- Receipt Pricing Title -->
+    <div class="section-title">Receipt Pricing</div>
+
+    <!-- Min Amount and Max Amount -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Min Amount</label>
+        <input type="number" id="minAmount" placeholder="Min ₹" min="0" step="0.01" required />
+      </div>
+      <div class="form-group">
+        <label>Max Amount</label>
+        <input type="number" id="maxAmount" placeholder="Max ₹" min="0" step="0.01" required />
+      </div>
+      <div class="form-group">
+        <label>Cashback Percent</label>
+        <input type="number" id="cashbackPercent" placeholder="%" min="0" max="100" step="0.1" required />
+      </div>
+    </div>
+
+    <!-- Business Information -->
+    <div class="section-title">Business Information</div>
+
+    <div class="form-group">
+      <label>Select Business</label>
+      <select id="business" required>
+        <option value="695a22ab105ed755e6a6de94">Demo Business</option>
+        <option value="507f1f77bcf86cd799439011">Tech Solutions Ltd</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Select Business Location</label>
+      <select id="location" required>
+        <option value="695a22ab105ed755e6a6de96">Bayside</option>
+        <option value="507f1f77bcf86cd799439012">Uptown</option>
+      </select>
+    </div>
+
+    <!-- Offer Image Upload -->
+    <div class="form-group">
+      <label>Select Offer Image</label>
+      <input type="file" id="offerImage" accept="image/*" />
+    </div>
+
+    <!-- Submit Button -->
+    <div class="buttons">
+      <button type="button" class="submit-btn" onclick="validateAndSubmit()">Save</button>
+      <button type="button" class="cancel-btn" onclick="cancel()">Cancel</button>
+    </div>
+
+  </form>
+
+  <script>
+    function validateAndSubmit() {
+      const offerName = document.getElementById('offerName').value.trim();
+      const brandName = document.getElementById('brandName').value.trim();
+      const category = document.getElementById('category').value;
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const minAmount = document.getElementById('minAmount').value;
+      const maxAmount = document.getElementById('maxAmount').value;
+      const cashbackPercent = document.getElementById('cashbackPercent').value;
+      const business = document.getElementById('business').value;
+      const location = document.getElementById('location').value;
+      const offerImage = document.getElementById('offerImage').files[0];
+
+
+      if (!offerName || !brandName || !category || !startDate || !endDate || !minAmount || !maxAmount || !cashbackPercent || !business || !location) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      if (parseFloat(minAmount) >= parseFloat(maxAmount)) {
+        alert('Min amount must be less than max amount.');
+        return;
+      }
+
+      // Prepare data
+      const data = {
+        name: offerName,
+        brand: brandName,
+        category: category,
+        startDate: startDate,
+        endDate: endDate,
+        minAmount: parseFloat(minAmount),
+        maxAmount: parseFloat(maxAmount),
+        cashbackPercent: parseFloat(cashbackPercent),
+        businessId: business,
+        locationId: location
+      };
+
+      // Submit to API
+      const token = localStorage.getItem('token');
+      fetch('http://localhost:3001/api/offers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            alert('Offer added successfully!');
+            window.location.href = 'businessViewOffers.html';
+          } else {
+            return response.json().then(err => { throw new Error(err.error || 'Failed to add offer'); });
+          }
+        })
+        .catch(error => {
+          alert('Error: ' + error.message);
+        });
+    }
+
+    function cancel() {
+      window.location.href = 'businessViewOffers.html';
+    }
+  </script>
+
+</body>
+
+</html>

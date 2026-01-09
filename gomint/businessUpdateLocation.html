@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoMint - Update Business Location</title>
+
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #ff6b35;
+            --text-color: #1a202c;
+            --bg-color: #f7fafc;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --border-radius: 1rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        header {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* ✅ FIXED */
+        }
+
+        main {
+            min-height: 100vh;
+            padding: 7rem 1rem 3rem;
+            /* less side padding */
+        }
+
+        .form-container {
+            width: 60vw;
+            /* 🔥 VERY WIDE */
+            max-width: none;
+            /* 🔥 REMOVE LIMIT */
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem 4rem;
+            /* more inner spacing */
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .location-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* looks better wide */
+            gap: 1.5rem;
+        }
+
+        .location-form input {
+            padding: 1.3rem;
+            border-radius: 0.75rem;
+            border: 2px solid var(--border-color);
+            font-size: 1.1rem;
+        }
+
+        .buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-color), #f7931e);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        @media (max-width: 768px) {
+            .location-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-container {
+                width: 100%;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">GoMint</div>
+    </header>
+
+    <main>
+        <div class="form-container">
+
+            <form class="location-form">
+                <input type="text" name="name" placeholder="Location Name" required />
+                <input type="text" name="address" placeholder="Address" required />
+                <input type="text" name="city" placeholder="City" required />
+                <input type="text" name="state" placeholder="State" required />
+                <input type="text" name="country" placeholder="Country" required />
+                <input type="text" name="postalCode" placeholder="Postal Code" required />
+                <input type="tel" name="phone" placeholder="Phone" required />
+
+                <div class="buttons">
+                    <button type="submit" class="btn">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancel()">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE = "http://localhost:3001/api";
+
+            // Get location ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const locationId = urlParams.get('id');
+
+            if (!locationId) {
+                alert('Location ID is required');
+                window.location.href = 'businessViewLocations.html';
+                return;
+            }
+
+            // Load location data
+            async function loadLocation() {
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`${API_BASE}/locations/${locationId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!res.ok) throw new Error('Failed to load location');
+
+                    const location = await res.json();
+
+                    // Populate form
+                    document.querySelector('input[name="name"]').value = location.name || '';
+                    document.querySelector('input[name="address"]').value = location.address || '';
+                    document.querySelector('input[name="city"]').value = location.city || '';
+                    document.querySelector('input[name="state"]').value = location.state || '';
+                    document.querySelector('input[name="country"]').value = location.country || '';
+                    document.querySelector('input[name="postalCode"]').value = location.postalCode || '';
+                    document.querySelector('input[name="phone"]').value = location.phone || '';
+
+                } catch (err) {
+                    alert('Error loading location: ' + err.message);
+                    console.error(err);
+                }
+            }
+
+            // Handle form submission
+            document.querySelector('.location-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('Submit handler called');
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('You must be logged in to update a location.');
+                    window.location.href = 'businessLogin.html';
+                    return;
+                }
+
+                const formData = new FormData(e.target);
+                const data = {
+                    name: formData.get('name').trim(),
+                    address: formData.get('address').trim(),
+                    city: formData.get('city').trim(),
+                    state: formData.get('state').trim(),
+                    country: formData.get('country').trim(),
+                    postalCode: formData.get('postalCode').trim(),
+                    phone: formData.get('phone').trim()
+                };
+
+                // Basic validation
+                if (!data.name || !data.address || !data.city || !data.state || !data.country || !data.postalCode || !data.phone) {
+                    alert('Please fill all fields');
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/locations/${locationId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw new Error(err.message || 'Failed to update location');
+                    }
+
+                    alert('Location updated successfully');
+                    window.location.href = 'businessViewLocations.html';
+
+                } catch (err) {
+                    if (err.message.toLowerCase().includes('failed to fetch')) {
+                        alert('Unable to reach backend server. Make sure the server is running and CORS is allowed.');
+                    } else {
+                        alert(err.message);
+                    }
+                    console.error(err);
+                }
+            });
+
+            function cancel() {
+                window.location.href = 'businessViewLocations.html';
+            }
+
+            // Load data on page load
+            loadLocation();
+        });
+    </script>
+
+</body>
+
+</html>

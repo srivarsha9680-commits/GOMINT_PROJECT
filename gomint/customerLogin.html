@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Login - GoMint</title>
+  <style>
+    :root {
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --accent-color: #ff6b35;
+      --text-color: #1a202c;
+      --bg-color: #f7fafc;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --border-radius: 1rem;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      min-height: 100vh;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Main Content */
+    main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding-top: 8rem;
+      /* Account for fixed header */
+    }
+
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #4a5568;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* Main Content */
+    main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 8rem 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 4rem;
+    }
+
+    .welcome-section {
+      flex: 1;
+      text-align: center;
+      color: white;
+    }
+
+    .welcome-section h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .welcome-section p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+
+
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .login-container {
+      flex: 1;
+      max-width: 600px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 3rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .login-container h2 {
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-container p {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 2rem;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      background: #ffffff;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .login-form input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .login-form input::placeholder {
+      color: #a0aec0;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .auth-links {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+      color: #718096;
+    }
+
+    .auth-links a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .auth-links a:hover {
+      color: var(--secondary-color);
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+        text-align: center;
+        padding: 6rem 1rem 2rem;
+        gap: 2rem;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+      }
+
+      .welcome-section p {
+        font-size: 1.1rem;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .login-container {
+        max-width: 100%;
+      }
+    }
+
+    /* Additional layout tweaks merged */
+    /* Welcome section */
+    #welcome-section {
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    #welcome-section h1 {
+      font-size: 32px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    #welcome-section p {
+      font-size: 18px;
+      color: #333;
+    }
+
+    /* Login form overrides for layout */
+    .login-form {
+      max-width: 1000px;
+      margin: 50px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      background-color: #fff;
+    }
+
+    .login-form input {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .login-form input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .login-form button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-form button:hover {
+      background-color: #0056b3;
+    }
+
+    .create-link {
+      color: black;
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .create-link:hover {
+      color: #007bff;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">GoMint</div>
+
+  </header>
+
+  <main>
+    <div class="login-container">
+
+
+      <!-- Login form -->
+      <form class="login-form">
+        <input type="email" id="email" placeholder="Email ID" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="button" class="login-btn" onclick="validateAndLogin()">Login</button>
+      </form>
+
+      <!-- Account creation link -->
+      <div class="auth-links">
+        Don't have an account?
+        <a href="customerRegistration.html">Create Account</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function validateAndLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        alert('Please enter both email and password!');
+        return;
+      }
+
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address!');
+        return;
+      }
+
+      // API call to authenticate
+      fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => {
+              throw new Error(err.message || 'Login failed');
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Store token in localStorage
+          localStorage.setItem('token', data.token);
+          console.log('Login successful, redirecting to profile...');
+          // Redirect to customer profile
+          window.location.href = 'customerProfile.html';
+        })
+        .catch(err => {
+          console.error('Login error:', err);
+          alert('Login failed: ' + err.message);
+        });
+    }
+  </script>
+</body>
+
+</html>
