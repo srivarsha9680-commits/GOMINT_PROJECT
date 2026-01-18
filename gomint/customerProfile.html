@@ -365,6 +365,13 @@
         document.getElementById('viewCountry').textContent = customer.country || 'Not provided';
         document.getElementById('viewAccountHolder').textContent = customer.firstName || '';
 
+        // Populate edit mode form fields with customer data
+        document.getElementById('firstName').value = customer.firstName || '';
+        document.getElementById('lastName').value = customer.lastName || '';
+        document.getElementById('email').value = customer.email || '';
+        document.getElementById('mobile').value = customer.mobile || '';
+        document.getElementById('country').value = customer.country || '';
+
         // Show view mode by default
         document.getElementById('viewMode').style.display = 'block';
         document.getElementById('editMode').style.display = 'none';
