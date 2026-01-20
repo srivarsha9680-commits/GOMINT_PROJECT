@@ -113,6 +113,34 @@
       font-size: 0.95rem;
     }
 
+    label .required {
+      color: #e53e3e;
+      margin-left: 0.25rem;
+      font-weight: 700;
+    }
+
+    input.error,
+    select.error {
+      border-color: #e53e3e !important;
+      background: #fff5f5;
+    }
+
+    input.error:focus,
+    select.error:focus {
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+    }
+
+    .error-message {
+      color: #e53e3e;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
     input,
     select {
       width: 100%;
@@ -254,54 +282,63 @@
       <form id="profileForm">
         <div class="form-row">
           <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" placeholder="Enter your first name" />
+            <label for="firstName">First Name <span class="required">*</span></label>
+            <input type="text" id="firstName" placeholder="Enter your first name" required />
+            <div class="error-message">First name is required</div>
           </div>
           <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" placeholder="Enter your last name" />
+            <label for="lastName">Last Name <span class="required">*</span></label>
+            <input type="text" id="lastName" placeholder="Enter your last name" required />
+            <div class="error-message">Last name is required</div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Enter your email address" />
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" placeholder="Enter your email address" required />
+          <div class="error-message">Valid email is required</div>
         </div>
 
         <div class="form-group">
-          <label for="mobile">Mobile Number</label>
-          <input type="tel" id="mobile" placeholder="Enter your mobile number" />
+          <label for="mobile">Mobile Number <span class="required">*</span></label>
+          <input type="tel" id="mobile" placeholder="Enter your mobile number" required />
+          <div class="error-message">Mobile number is required</div>
         </div>
 
         <div class="form-group">
-          <label for="accountHolder">Account Holder Name</label>
-          <input type="text" id="accountHolder" placeholder="Enter account holder name" />
+          <label for="accountHolder">Account Holder Name <span class="required">*</span></label>
+          <input type="text" id="accountHolder" placeholder="Enter account holder name" required />
+          <div class="error-message">Account holder name is required</div>
         </div>
 
         <div class="form-group">
-          <label for="account">Bank Account Number</label>
-          <input type="text" id="account" placeholder="Enter bank account number" />
+          <label for="account">Bank Account Number <span class="required">*</span></label>
+          <input type="text" id="account" placeholder="Enter bank account number" required />
+          <div class="error-message">Bank account number is required</div>
         </div>
 
         <div class="form-group">
-          <label for="confirmAccount">Confirm Account Number</label>
-          <input type="text" id="confirmAccount" placeholder="Confirm bank account number" />
+          <label for="confirmAccount">Confirm Account Number <span class="required">*</span></label>
+          <input type="text" id="confirmAccount" placeholder="Confirm bank account number" required />
+          <div class="error-message">Account numbers do not match</div>
         </div>
 
         <div class="form-group">
-          <label for="ifsc">Bank Code (IFSC/SWIFT/Sort Code)</label>
-          <input type="text" id="ifsc" placeholder="Enter bank code" />
+          <label for="ifsc">Bank Code (IFSC/SWIFT/Sort Code) <span class="required">*</span></label>
+          <input type="text" id="ifsc" placeholder="Enter bank code" required />
+          <div class="error-message">Bank code is required</div>
         </div>
 
         <div class="form-group">
-          <label for="country">Select Country</label>
-          <select id="country">
+          <label for="country">Select Country <span class="required">*</span></label>
+          <select id="country" required>
             <option value="">Select your country</option>
             <option value="India">India</option>
             <option value="United States">United States</option>
             <option value="United Kingdom">United Kingdom</option>
             <option value="Australia">Australia</option>
           </select>
+          <div class="error-message">Country is required</div>
         </div>
 
         <div class="button-row">
@@ -349,9 +386,11 @@
           }
         });
 
+        console.log('Profile response status:', response.status);
+
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || `HTTP ${response.status}: Failed to fetch customer data`);
+          throw new Error(errorData.message || `HTTP ${response.status}: ${errorData.error || 'Failed to fetch customer data'}`);
         }
 
         const customer = await response.json();
@@ -377,6 +416,7 @@
         document.getElementById('editMode').style.display = 'none';
       } catch (err) {
         console.error('Error loading profile:', err);
+
         // Still show the form even if profile data fails to load
         document.getElementById('viewMode').style.display = 'none';
         document.getElementById('editMode').style.display = 'block';
@@ -415,7 +455,32 @@
       document.getElementById('country').value = document.getElementById('viewCountry').textContent;
     }
 
+    function clearFormErrors() {
+      const inputs = document.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.classList.remove('error');
+        const errorMsg = input.parentElement.querySelector('.error-message');
+        if (errorMsg) {
+          errorMsg.classList.remove('show');
+        }
+      });
+    }
+
+    function showFieldError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        field.classList.add('error');
+        const errorMsg = field.parentElement.querySelector('.error-message');
+        if (errorMsg) {
+          errorMsg.textContent = message;
+          errorMsg.classList.add('show');
+        }
+      }
+    }
+
     function updateProfile() {
+      clearFormErrors();
+
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -426,18 +491,61 @@
       const ifsc = document.getElementById('ifsc').value.trim();
       const country = document.getElementById('country').value;
 
-      if (!firstName || !lastName || !email || !mobile || !accountHolder || !account || !confirmAccount || !ifsc || !country) {
-        alert('Please fill in all required fields.');
-        return;
+      // Validation checks with error markers
+      let hasErrors = false;
+
+      if (!firstName) {
+        showFieldError('firstName', 'First name is required');
+        hasErrors = true;
       }
 
-      if (account !== confirmAccount) {
-        alert('Account numbers do not match.');
-        return;
+      if (!lastName) {
+        showFieldError('lastName', 'Last name is required');
+        hasErrors = true;
       }
 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Please enter a valid email address.');
+      if (!email) {
+        showFieldError('email', 'Email is required');
+        hasErrors = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError('email', 'Please enter a valid email address');
+        hasErrors = true;
+      }
+
+      if (!mobile) {
+        showFieldError('mobile', 'Mobile number is required');
+        hasErrors = true;
+      }
+
+      if (!accountHolder) {
+        showFieldError('accountHolder', 'Account holder name is required');
+        hasErrors = true;
+      }
+
+      if (!account) {
+        showFieldError('account', 'Bank account number is required');
+        hasErrors = true;
+      }
+
+      if (!confirmAccount) {
+        showFieldError('confirmAccount', 'Confirm account number is required');
+        hasErrors = true;
+      } else if (account !== confirmAccount) {
+        showFieldError('confirmAccount', 'Account numbers do not match');
+        hasErrors = true;
+      }
+
+      if (!ifsc) {
+        showFieldError('ifsc', 'Bank code is required');
+        hasErrors = true;
+      }
+
+      if (!country) {
+        showFieldError('country', 'Country is required');
+        hasErrors = true;
+      }
+
+      if (hasErrors) {
         return;
       }
 

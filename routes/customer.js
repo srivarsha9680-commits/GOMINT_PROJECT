@@ -16,7 +16,14 @@ router.get('/', async (req, res) => {
 // GET /api/customers/:id
 router.get('/:id', async (req, res) => {
   try {
-    const doc = await Customer.findById(req.params.id);
+    // First try to find by customer ID
+    let doc = await Customer.findById(req.params.id);
+
+    // If not found, try to find by userId (for profile page that uses user ID)
+    if (!doc) {
+      doc = await Customer.findOne({ userId: req.params.id });
+    }
+
     if (!doc) return res.status(404).json({ message: 'Customer not found' });
     res.json(doc);
   } catch (err) {
@@ -52,11 +59,22 @@ router.put(
     if (!err.isEmpty()) return res.status(400).json({ errors: err.array() });
 
     try {
-      const updated = await Customer.findByIdAndUpdate(
+      // First try to update by customer ID
+      let updated = await Customer.findByIdAndUpdate(
         req.params.id,
         req.body,
-        { new: true, runValidators: false } // Set to false to avoid duplicate key errors on same values
+        { new: true, runValidators: false }
       );
+
+      // If not found, try to update by userId (for profile page that uses user ID)
+      if (!updated) {
+        updated = await Customer.findOneAndUpdate(
+          { userId: req.params.id },
+          req.body,
+          { new: true, runValidators: false }
+        );
+      }
+
       if (!updated) return res.status(404).json({ message: 'Customer not found' });
       res.json(updated);
     } catch (err) {

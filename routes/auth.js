@@ -47,6 +47,7 @@ router.post('/register', async (req, res) => {
     if (role === 'customer') {
       try {
         const customerData = {
+          userId: user._id, // Link customer to user
           firstName,
           lastName,
           email: username,

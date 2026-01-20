@@ -381,6 +381,7 @@
         })
       })
         .then(response => {
+          console.log('Login response status:', response.status);
           if (!response.ok) {
             return response.json().then(err => {
               throw new Error(err.message || 'Login failed');
@@ -397,7 +398,7 @@
         })
         .catch(err => {
           console.error('Login error:', err);
-          alert('Login failed: ' + err.message);
+          alert('Login failed: ' + err.message + '\n\nMake sure the server is running on port 3001.');
         });
     }
   </script>

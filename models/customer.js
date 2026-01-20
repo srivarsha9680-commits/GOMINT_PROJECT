@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const customerSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    unique: true,
+    sparse: true
+  },
   firstName: {
     type: String,
     trim: true

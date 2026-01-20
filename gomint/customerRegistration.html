@@ -130,6 +130,28 @@
       transform: translateY(-1px);
     }
 
+    .registration-form input.error,
+    .registration-form select.error {
+      border-color: #e53e3e !important;
+      background: #fff5f5;
+    }
+
+    .registration-form input.error:focus,
+    .registration-form select.error:focus {
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+    }
+
+    .error-message {
+      color: #e53e3e;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
     .registration-form input::placeholder {
       color: #a0aec0;
     }
@@ -189,30 +211,49 @@
 
   <main>
     <div class="registration-container">
+      <h2>Create Account</h2>
+      <p>Join GoMint today</p>
 
-
-      <form class="registration-form">
+      <form class="registration-form" id="registrationForm">
         <div class="row">
-          <input type="text" placeholder="First Name" required />
-          <input type="text" placeholder="Last Name" required />
+          <div style="flex: 1;">
+            <input type="text" id="firstName" placeholder="First Name" required />
+            <div class="error-message">First name is required</div>
+          </div>
+          <div style="flex: 1;">
+            <input type="text" id="lastName" placeholder="Last Name" required />
+            <div class="error-message">Last name is required</div>
+          </div>
         </div>
 
-        <input type="email" placeholder="Email ID" required />
+        <div>
+          <input type="email" id="email" placeholder="Email ID" required />
+          <div class="error-message">Valid email is required</div>
+        </div>
 
         <div class="row">
-          <select class="compact-select" required>
+          <select id="countryCode" class="compact-select" required>
             <option value="+91">+91</option>
             <option value="+1">+1</option>
             <option value="+44">+44</option>
             <option value="+61">+61</option>
             <option value="+49">+49</option>
           </select>
-          <input type="tel" placeholder="Mobile Number" required />
+          <div style="flex: 1;">
+            <input type="tel" id="phone" placeholder="Mobile Number" required />
+            <div class="error-message">Mobile number is required</div>
+          </div>
         </div>
 
         <div class="row">
-          <input type="password" placeholder="Password" required />
-          <input type="password" placeholder="Confirm Password" required />
+          <div style="flex: 1;">
+            <input type="password" id="password" placeholder="Password" required />
+            <div class="error-message">Password is required</div>
+          </div>
+          <div style="flex: 1;">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+            <div class="error-message">Passwords do not match</div>
+          </div>
         </div>
 
         <button type="button" id="registerBtn">Register</button>
@@ -226,25 +267,88 @@
   </main>
 
   <script>
-    document.getElementById('registerBtn').addEventListener('click', async () => {
-      const firstName = document.querySelector('input[placeholder="First Name"]').value;
-      const lastName = document.querySelector('input[placeholder="Last Name"]').value;
-      const email = document.querySelector('input[placeholder="Email ID"]').value;
-      const phone = document.querySelector('input[placeholder="Mobile Number"]').value;
-      const password = document.querySelector('input[placeholder="Password"]').value;
-      const confirmPassword = document.querySelector('input[placeholder="Confirm Password"]').value;
+    function clearFormErrors() {
+      const inputs = document.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.classList.remove('error');
+        const errorMsg = input.parentElement.querySelector('.error-message');
+        if (errorMsg) {
+          errorMsg.classList.remove('show');
+        }
+      });
+    }
 
-      if (password !== confirmPassword) {
-        alert('Passwords do not match');
-        return;
+    function showFieldError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        field.classList.add('error');
+        const errorMsg = field.parentElement.querySelector('.error-message');
+        if (errorMsg) {
+          errorMsg.textContent = message;
+          errorMsg.classList.add('show');
+        }
+      }
+    }
+
+    document.getElementById('registerBtn').addEventListener('click', async () => {
+      clearFormErrors();
+
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const countryCode = document.getElementById('countryCode').value;
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+      let hasErrors = false;
+
+      if (!firstName) {
+        showFieldError('firstName', 'First name is required');
+        hasErrors = true;
       }
 
-      if (!email || !password || !firstName || !lastName || !phone) {
-        alert('All fields are required');
+      if (!lastName) {
+        showFieldError('lastName', 'Last name is required');
+        hasErrors = true;
+      }
+
+      if (!email) {
+        showFieldError('email', 'Email is required');
+        hasErrors = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError('email', 'Please enter a valid email');
+        hasErrors = true;
+      }
+
+      if (!phone) {
+        showFieldError('phone', 'Mobile number is required');
+        hasErrors = true;
+      }
+
+      if (!password) {
+        showFieldError('password', 'Password is required');
+        hasErrors = true;
+      } else if (password.length < 6) {
+        showFieldError('password', 'Password must be at least 6 characters');
+        hasErrors = true;
+      }
+
+      if (!confirmPassword) {
+        showFieldError('confirmPassword', 'Confirm password is required');
+        hasErrors = true;
+      } else if (password !== confirmPassword) {
+        showFieldError('confirmPassword', 'Passwords do not match');
+        hasErrors = true;
+      }
+
+      if (hasErrors) {
         return;
       }
 
       try {
+        console.log('Starting registration with email:', email);
+
         const response = await fetch('http://localhost:3001/api/auth/register', {
           method: 'POST',
           headers: {
@@ -260,15 +364,19 @@
           })
         });
 
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+
         if (response.ok) {
           alert('Registration successful! Please login.');
           window.location.href = 'customerLogin.html';
         } else {
-          const error = await response.json();
-          alert('Registration failed: ' + error.message);
+          alert('Registration failed: ' + (data.message || data.error || 'Unknown error'));
         }
       } catch (err) {
-        alert('Error: ' + err.message);
+        console.error('Registration error:', err);
+        alert('Failed to connect to server. Please make sure the server is running on port 3001.\n\nError: ' + err.message);
       }
     });
   </script>
