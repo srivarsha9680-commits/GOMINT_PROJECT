@@ -41,6 +41,23 @@ router.post(
     if (!err.isEmpty()) return res.status(400).json({ errors: err.array() });
 
     try {
+      const { mobile } = req.body;
+
+      // If mobile is provided, check if customer already exists
+      if (mobile) {
+        let existing = await Customer.findOne({ mobile: mobile });
+        if (existing) {
+          // Update existing customer with any new data
+          const updated = await Customer.findByIdAndUpdate(
+            existing._id,
+            req.body,
+            { new: true }
+          );
+          return res.status(200).json(updated);
+        }
+      }
+
+      // Create new customer
       const payload = req.body;
       const created = await Customer.create(payload);
       res.status(201).json(created);

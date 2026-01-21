@@ -124,12 +124,12 @@
       color: var(--text-secondary);
       margin-bottom: 2rem;
       font-size: 1rem;
-      
-      color: #334155;
-  font-weight: 600;
-}
 
-    
+      color: #334155;
+      font-weight: 600;
+    }
+
+
 
 
 
@@ -628,7 +628,7 @@
   </header>
 
   <div class="container">
-   
+
     <p class="subheading">Submit a new cashback request</p>
 
     <form id="cashbackForm">
@@ -678,10 +678,10 @@
       </div>
 
       <div class="button-row">
-  <button type="button" class="submit-btn" onclick="validateAndSubmit()">Submit Request</button>
-  <button type="button" class="cancel-btn"
-    onclick="window.location.href='customercashBackReward.html'">Cancel</button>
-</div>
+        <button type="button" class="submit-btn" onclick="validateAndSubmit()">Submit Request</button>
+        <button type="button" class="cancel-btn"
+          onclick="window.location.href='customercashBackReward.html'">Cancel</button>
+      </div>
 
     </form>
   </div>
@@ -689,6 +689,52 @@
 
 
   <script>
+    // Extract customer ID from token
+    function getCustomerId() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'customerLogin.html';
+        return null;
+      }
+      try {
+        // Token is stored as btoa(JSON) from login
+        const decoded = JSON.parse(atob(token));
+        return decoded.sub; // sub contains the customer ID
+      } catch (err) {
+        console.error('Failed to decode token:', err);
+        localStorage.removeItem('token');
+        window.location.href = 'customerLogin.html';
+        return null;
+      }
+    }
+
+    // Load customer profile on page load
+    window.onload = function () {
+      const customerId = getCustomerId();
+      if (!customerId) return;
+
+      const token = localStorage.getItem('token');
+      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch profile');
+          return response.json();
+        })
+        .then(profileData => {
+          // Auto-populate mobile number
+          if (profileData.mobile) {
+            document.getElementById('phoneNumber').value = profileData.mobile;
+          }
+        })
+        .catch(err => {
+          console.error('Error loading profile:', err);
+        });
+    }
+
     function validateAndSubmit() {
       const businessName = document.getElementById("businessName").value;
       const businessLocation = document.getElementById("businessLocation").value;

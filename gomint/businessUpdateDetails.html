@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profile – On Details updated</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f4f6f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 30px;
+        }
+
+        .profile-name {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+
+        .profile-info p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .profile-info p span {
+            display: block;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .bank-card {
+            margin-top: 25px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            position: relative;
+            background: #fafafa;
+        }
+
+        .bank-card h4 {
+            margin: 0 0 12px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .bank-card p {
+            margin: 6px 0;
+            font-size: 14px;
+        }
+
+        .bank-card .muted {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .bank-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 26px;
+            color: #2f6fed;
+        }
+
+        /* BUTTON */
+        .button-row {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            padding: 0.8rem 2rem;
+            background: #4f63ff;
+            border: none;
+            border-radius: 0.4rem;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="profile-name" id="profileName">-</div>
+
+        <!-- Profile Info -->
+        <div class="profile-info">
+            <p>
+                <span>Email</span>
+                <span id="profileEmail">-</span>
+            </p>
+            <p>
+                <span>Mobile Number</span>
+                <span id="profileMobile">-</span>
+            </p>
+        </div>
+
+        <!-- Bank Details -->
+        <div class="bank-card">
+            <div class="bank-icon">📄</div>
+
+            <h4>Bank Details</h4>
+            <p><strong>Bank:</strong> <span id="bankName">-</span></p>
+            <p><strong>A/c Holder:</strong> <span id="acctHolder">-</span></p>
+            <p><strong>Account No:</strong> <span id="acctNumber">-</span></p>
+            <p><strong>Bank Code (IFSC/Routing/Swift):</strong> <span id="bankIfsc">-</span></p>
+            <p class="muted">
+                Location: <span id="bankLocation">-</span><br>
+                Last updated: <span id="lastUpdated">-</span>
+            </p>
+        </div>
+
+        <!-- CTA -->
+        <div class="button-row">
+            <button class="btn-primary" onclick="goToCashbackRequests()">
+                Go to Cashback Requests
+            </button>
+        </div>
+
+        <div class="footer">
+            © Copyright 2024
+        </div>
+
+    </div>
+
+    <script>        // Load and display profile and bank details from localStorage
+        window.onload = function () {
+            // Load profile data
+            const profileData = JSON.parse(localStorage.getItem('profile') || '{}');
+            const bankData = JSON.parse(localStorage.getItem('bank') || '{}');
+
+            // Update profile information
+            if (profileData.firstName || profileData.lastName) {
+                const fullName = `${profileData.firstName || ''} ${profileData.lastName || ''}`.trim();
+                document.getElementById('profileName').textContent = fullName;
+            }
+            document.getElementById('profileEmail').textContent = profileData.email || '-';
+            document.getElementById('profileMobile').textContent = profileData.mobile || '-';
+
+            // Update bank details
+            document.getElementById('bankName').textContent = bankData.bankName || '-';
+            document.getElementById('acctHolder').textContent = bankData.acctHolder || '-';
+
+            // Display masked account number (only last 4 digits)
+            if (bankData.acctNumber) {
+                document.getElementById('acctNumber').textContent = '****' + bankData.acctNumber.slice(-4);
+            } else {
+                document.getElementById('acctNumber').textContent = '-';
+            }
+
+            document.getElementById('bankIfsc').textContent = bankData.ifsc || '-';
+
+            // Display location
+            const location = `${bankData.state || ''} ${bankData.country || ''}`.trim();
+            document.getElementById('bankLocation').textContent = location || '-';
+
+            document.getElementById('lastUpdated').textContent = bankData.lastUpdated || '-';
+        };
+        function goToCashbackRequests() {
+            window.location.href = 'customerCashbackRequestList.html';
+        }
+    </script>
+
+</body>
+
+</html>

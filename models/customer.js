@@ -30,6 +30,36 @@ const customerSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  bankDetails: {
+    acctHolder: {
+      type: String,
+      trim: true
+    },
+    bankName: {
+      type: String,
+      trim: true
+    },
+    acctNumber: {
+      type: String,
+      trim: true
+    },
+    ifsc: {
+      type: String,
+      trim: true
+    },
+    state: {
+      type: String,
+      trim: true
+    },
+    country: {
+      type: String,
+      trim: true
+    },
+    lastUpdated: {
+      type: Date,
+      default: null
+    }
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Customer Profile - GoMint</title>
+
   <style>
     :root {
       --primary-color: #667eea;
@@ -27,22 +28,17 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       min-height: 100vh;
-      color: var(--text-color);
-      line-height: 1.6;
       padding: 2rem;
     }
 
-    /* Header */
     header {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       position: fixed;
       top: 0;
       left: 0;
@@ -57,48 +53,42 @@
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    nav {
-      display: flex;
-      gap: 1rem;
     }
 
     nav a {
-      color: var(--text-color);
+      margin-left: 1rem;
       text-decoration: none;
+      color: #1a202c;
+      font-weight: 500;
+      transition: all 0.3s ease;
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
-      transition: var(--transition);
-      font-weight: 500;
     }
 
     nav a:hover {
-      background: rgba(102, 126, 234, 0.1);
       color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.1);
     }
 
     .container {
       max-width: 700px;
-      margin: 6rem auto 2rem;
+      margin: 6rem auto;
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
       padding: 3rem;
-      box-shadow: var(--shadow);
       border-radius: var(--border-radius);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow);
     }
 
     h1 {
       text-align: center;
-      font-size: 2.25rem;
-      font-weight: 700;
       margin-bottom: 2rem;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
     }
 
     .form-group {
@@ -106,34 +96,26 @@
     }
 
     label {
-      display: block;
       font-weight: 600;
-      color: var(--text-color);
       margin-bottom: 0.5rem;
-      font-size: 0.95rem;
+      display: block;
     }
 
     label .required {
-      color: #e53e3e;
-      margin-left: 0.25rem;
-      font-weight: 700;
+      color: #ef4444;
+      margin-left: 0.2rem;
     }
 
     input.error,
     select.error {
-      border-color: #e53e3e !important;
-      background: #fff5f5;
-    }
-
-    input.error:focus,
-    select.error:focus {
-      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+      border-color: #ef4444 !important;
+      background-color: #fef2f2;
     }
 
     .error-message {
-      color: #e53e3e;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.3rem;
       display: none;
     }
 
@@ -145,23 +127,9 @@
     select {
       width: 100%;
       padding: 1rem;
-      font-size: 1rem;
-      border: 2px solid var(--border-color);
       border-radius: 0.75rem;
-      background: #ffffff;
-      transition: var(--transition);
+      border: 2px solid var(--border-color);
       outline: none;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-      transform: translateY(-1px);
-    }
-
-    input::placeholder {
-      color: #a0aec0;
     }
 
     .form-row {
@@ -178,75 +146,36 @@
       justify-content: center;
       gap: 1rem;
       margin-top: 2rem;
-      flex-wrap: wrap;
     }
 
     .btn {
       padding: 1rem 2rem;
-      font-size: 1rem;
-      border: none;
       border-radius: 0.75rem;
+      border: none;
       cursor: pointer;
       font-weight: 600;
-      transition: var(--transition);
-      min-width: 120px;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: #fff;
     }
 
     .btn-secondary {
-      background: linear-gradient(135deg, var(--accent-color) 0%, #f7931e 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      background: linear-gradient(135deg, var(--accent-color), #f7931e);
+      color: #fff;
     }
 
-    .btn-secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
-    }
-
-    /* Responsive Design */
     @media (max-width: 768px) {
-      body {
-        padding: 1rem;
-      }
-
-      .container {
-        margin: 5rem auto 2rem;
-        padding: 2rem;
-      }
-
-      h1 {
-        font-size: 1.875rem;
-      }
-
       .form-row {
         flex-direction: column;
-        gap: 0;
-      }
-
-      .button-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn {
-        width: 100%;
       }
     }
   </style>
 </head>
 
 <body>
+
   <header>
     <div class="logo">GoMint</div>
     <nav>
@@ -257,111 +186,133 @@
 
   <div class="container">
 
+    <!-- VIEW MODE -->
+    <div id="viewMode" style="display:none">
+      <h2>Profile Summary</h2>
+      <p><strong>First Name:</strong> <span id="viewFirstName">-</span></p>
+      <p><strong>Last Name:</strong> <span id="viewLastName">-</span></p>
+      <p><strong>Email:</strong> <span id="viewEmail">-</span></p>
+      <p><strong>Mobile:</strong> <span id="viewMobile">-</span></p>
+      <p><strong>Country:</strong> <span id="viewCountry">-</span></p>
 
-    <!-- View Mode -->
-    <div id="viewMode" class="profile-section" style="display: none;">
-      <div class="profile-info">
-        <h2>Profile Summary</h2>
-        <p><strong>Name:</strong> <span id="viewName">John Doe</span></p>
-        <p><strong>Email:</strong> <span id="viewEmail">john.doe@example.com</span></p>
-        <p><strong>Mobile:</strong> <span id="viewMobile">+1 234 567 8900</span></p>
-        <h3>Bank Details</h3>
-        <p><strong>Account Holder:</strong> <span id="viewAccountHolder">John Doe</span></p>
-        <p><strong>Account Number:</strong> <span id="viewAccount">**** **** **** 1234</span></p>
-        <p><strong>Bank Code:</strong> <span id="viewIfsc">ABCD0123456</span></p>
-        <p><strong>Country:</strong> <span id="viewCountry">United States</span></p>
-      </div>
       <div class="button-row">
-        <button type="button" class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</button>
+        <button class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</button>
       </div>
     </div>
 
-    <!-- Edit Mode -->
-    <div id="editMode" class="profile-section" style="display: block;">
+    <!-- EDIT MODE -->
+    <div id="editMode">
+      <h1>My Profile</h1>
 
       <form id="profileForm">
+
         <div class="form-row">
           <div class="form-group">
-            <label for="firstName">First Name <span class="required">*</span></label>
-            <input type="text" id="firstName" placeholder="Enter your first name" required />
-            <div class="error-message">First name is required</div>
+            <label>First Name<span class="required">*</span></label>
+            <input id="firstName" />
+            <div class="error-message">This field is required</div>
           </div>
           <div class="form-group">
-            <label for="lastName">Last Name <span class="required">*</span></label>
-            <input type="text" id="lastName" placeholder="Enter your last name" required />
-            <div class="error-message">Last name is required</div>
+            <label>Last Name<span class="required">*</span></label>
+            <input id="lastName" />
+            <div class="error-message">This field is required</div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="email">Email <span class="required">*</span></label>
-          <input type="email" id="email" placeholder="Enter your email address" required />
-          <div class="error-message">Valid email is required</div>
+          <label>Email<span class="required">*</span></label>
+          <input id="email" />
+          <div class="error-message">This field is required</div>
         </div>
 
         <div class="form-group">
-          <label for="mobile">Mobile Number <span class="required">*</span></label>
-          <input type="tel" id="mobile" placeholder="Enter your mobile number" required />
-          <div class="error-message">Mobile number is required</div>
+          <label>Mobile Number<span class="required">*</span></label>
+          <input id="mobile" />
+          <div class="error-message">This field is required</div>
         </div>
 
         <div class="form-group">
-          <label for="accountHolder">Account Holder Name <span class="required">*</span></label>
-          <input type="text" id="accountHolder" placeholder="Enter account holder name" required />
-          <div class="error-message">Account holder name is required</div>
-        </div>
-
-        <div class="form-group">
-          <label for="account">Bank Account Number <span class="required">*</span></label>
-          <input type="text" id="account" placeholder="Enter bank account number" required />
-          <div class="error-message">Bank account number is required</div>
-        </div>
-
-        <div class="form-group">
-          <label for="confirmAccount">Confirm Account Number <span class="required">*</span></label>
-          <input type="text" id="confirmAccount" placeholder="Confirm bank account number" required />
-          <div class="error-message">Account numbers do not match</div>
-        </div>
-
-        <div class="form-group">
-          <label for="ifsc">Bank Code (IFSC/SWIFT/Sort Code) <span class="required">*</span></label>
-          <input type="text" id="ifsc" placeholder="Enter bank code" required />
-          <div class="error-message">Bank code is required</div>
-        </div>
-
-        <div class="form-group">
-          <label for="country">Select Country <span class="required">*</span></label>
-          <select id="country" required>
-            <option value="">Select your country</option>
-            <option value="India">India</option>
-            <option value="United States">United States</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="Australia">Australia</option>
+          <label>Select Country</label>
+          <select id="country">
+            <option value="">Select Country</option>
+            <option>India</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Australia</option>
           </select>
-          <div class="error-message">Country is required</div>
         </div>
+
+        <hr style="margin:2rem 0">
+
+        <h2>Bank Details</h2>
+        <p style="text-align:center;margin-bottom:1.5rem;">Add new bank details</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>A/c Holder Name</label>
+            <input />
+          </div>
+          <div class="form-group">
+            <label>Bank Name</label>
+            <input />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>A/c Number</label>
+            <input />
+          </div>
+          <div class="form-group">
+            <label>Confirm A/c Number</label>
+            <input />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Bank Code (IFSC/Routing/Swift)</label>
+          <input />
+        </div>
+
+        <div class="form-group">
+          <label>Bank Location</label>
+          <select>
+            <option>Select Country</option>
+            <option>India</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Australia</option>
+          </select>
+        </div>
+
+        <p id="successMsg" style="display:none; color:green; text-align:center; margin-top:1rem;">
+          Profile updated successfully
+        </p>
+
 
         <div class="button-row">
           <button type="button" class="btn btn-primary" onclick="updateProfile()">Update Profile</button>
-          <button type="button" class="btn btn-secondary" onclick="toggleEditMode()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="window.location.href='customerBankDetails.html'">
+            Add Bank Details
+          </button>
         </div>
+
       </form>
     </div>
+
   </div>
 
   <script>
-    // Extract customer ID from JWT token stored in localStorage
+    // Extract customer ID from token
     function getCustomerId() {
       const token = localStorage.getItem('token');
       if (!token) {
         window.location.href = 'customerLogin.html';
         return null;
       }
-
       try {
-        const parts = token.split('.');
-        const decoded = JSON.parse(atob(parts[1]));
-        return decoded.sub; // sub contains the user ID
+        const decoded = JSON.parse(atob(token));
+        return decoded.sub;
       } catch (err) {
         console.error('Failed to decode token:', err);
         localStorage.removeItem('token');
@@ -370,232 +321,120 @@
       }
     }
 
-    // Fetch and display customer data on page load
-    async function loadCustomerProfile() {
+    // Load profile data on page load
+    window.onload = function () {
       const customerId = getCustomerId();
       if (!customerId) return;
 
-      try {
-        console.log('Loading profile for customer:', customerId);
-        const token = localStorage.getItem('token');
-
-        const response = await fetch(`http://localhost:3001/api/customers/${customerId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+      const token = localStorage.getItem('token');
+      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch profile');
+          return response.json();
+        })
+        .then(profileData => {
+          // Pre-fill form fields
+          document.getElementById('firstName').value = profileData.firstName || '';
+          document.getElementById('lastName').value = profileData.lastName || '';
+          document.getElementById('email').value = profileData.email || '';
+          document.getElementById('mobile').value = profileData.mobile || '';
+          document.getElementById('country').value = profileData.country || '';
+        })
+        .catch(err => {
+          console.error('Error loading profile:', err);
         });
-
-        console.log('Profile response status:', response.status);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || `HTTP ${response.status}: ${errorData.error || 'Failed to fetch customer data'}`);
-        }
-
-        const customer = await response.json();
-        console.log('Customer data loaded:', customer);
-
-        // Populate view mode with customer data
-        const fullName = `${customer.firstName || ''} ${customer.lastName || ''}`.trim();
-        document.getElementById('viewName').textContent = fullName || 'Customer';
-        document.getElementById('viewEmail').textContent = customer.email || 'Not provided';
-        document.getElementById('viewMobile').textContent = customer.mobile || 'Not provided';
-        document.getElementById('viewCountry').textContent = customer.country || 'Not provided';
-        document.getElementById('viewAccountHolder').textContent = customer.firstName || '';
-
-        // Populate edit mode form fields with customer data
-        document.getElementById('firstName').value = customer.firstName || '';
-        document.getElementById('lastName').value = customer.lastName || '';
-        document.getElementById('email').value = customer.email || '';
-        document.getElementById('mobile').value = customer.mobile || '';
-        document.getElementById('country').value = customer.country || '';
-
-        // Show view mode by default
-        document.getElementById('viewMode').style.display = 'block';
-        document.getElementById('editMode').style.display = 'none';
-      } catch (err) {
-        console.error('Error loading profile:', err);
-
-        // Still show the form even if profile data fails to load
-        document.getElementById('viewMode').style.display = 'none';
-        document.getElementById('editMode').style.display = 'block';
-      }
-    }
-
-    // Load profile when page loads - call immediately and also on DOMContentLoaded for safety
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', loadCustomerProfile);
-    } else {
-      loadCustomerProfile();
-    }
-
-    function toggleEditMode() {
-      const viewMode = document.getElementById('viewMode');
-      const editMode = document.getElementById('editMode');
-      if (viewMode.style.display === 'none') {
-        viewMode.style.display = 'block';
-        editMode.style.display = 'none';
-      } else {
-        viewMode.style.display = 'none';
-        editMode.style.display = 'block';
-        // Populate edit form with current view data
-        populateEditForm();
-      }
-    }
-
-    function populateEditForm() {
-      document.getElementById('firstName').value = document.getElementById('viewName').textContent.split(' ')[0] || '';
-      document.getElementById('lastName').value = document.getElementById('viewName').textContent.split(' ')[1] || '';
-      document.getElementById('email').value = document.getElementById('viewEmail').textContent;
-      document.getElementById('mobile').value = document.getElementById('viewMobile').textContent;
-      document.getElementById('accountHolder').value = document.getElementById('viewAccountHolder').textContent;
-      // For account, we might not show full number for security
-      document.getElementById('ifsc').value = document.getElementById('viewIfsc').textContent;
-      document.getElementById('country').value = document.getElementById('viewCountry').textContent;
-    }
-
-    function clearFormErrors() {
-      const inputs = document.querySelectorAll('input, select');
-      inputs.forEach(input => {
-        input.classList.remove('error');
-        const errorMsg = input.parentElement.querySelector('.error-message');
-        if (errorMsg) {
-          errorMsg.classList.remove('show');
-        }
-      });
-    }
-
-    function showFieldError(fieldId, message) {
-      const field = document.getElementById(fieldId);
-      if (field) {
-        field.classList.add('error');
-        const errorMsg = field.parentElement.querySelector('.error-message');
-        if (errorMsg) {
-          errorMsg.textContent = message;
-          errorMsg.classList.add('show');
-        }
-      }
     }
 
     function updateProfile() {
-      clearFormErrors();
+      const customerId = getCustomerId();
+      if (!customerId) return;
 
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const email = document.getElementById('email').value.trim();
       const mobile = document.getElementById('mobile').value.trim();
-      const accountHolder = document.getElementById('accountHolder').value.trim();
-      const account = document.getElementById('account').value.trim();
-      const confirmAccount = document.getElementById('confirmAccount').value.trim();
-      const ifsc = document.getElementById('ifsc').value.trim();
       const country = document.getElementById('country').value;
 
-      // Validation checks with error markers
+      // Clear previous errors
+      document.querySelectorAll('input, select').forEach(field => {
+        field.classList.remove('error');
+        field.parentElement.querySelector('.error-message')?.classList.remove('show');
+      });
+
       let hasErrors = false;
 
+      // Validation with field highlighting
       if (!firstName) {
-        showFieldError('firstName', 'First name is required');
+        document.getElementById('firstName').classList.add('error');
+        document.getElementById('firstName').parentElement.querySelector('.error-message').classList.add('show');
         hasErrors = true;
       }
 
       if (!lastName) {
-        showFieldError('lastName', 'Last name is required');
+        document.getElementById('lastName').classList.add('error');
+        document.getElementById('lastName').parentElement.querySelector('.error-message').classList.add('show');
         hasErrors = true;
       }
 
       if (!email) {
-        showFieldError('email', 'Email is required');
-        hasErrors = true;
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showFieldError('email', 'Please enter a valid email address');
+        document.getElementById('email').classList.add('error');
+        document.getElementById('email').parentElement.querySelector('.error-message').classList.add('show');
         hasErrors = true;
       }
 
       if (!mobile) {
-        showFieldError('mobile', 'Mobile number is required');
+        document.getElementById('mobile').classList.add('error');
+        document.getElementById('mobile').parentElement.querySelector('.error-message').classList.add('show');
         hasErrors = true;
       }
 
-      if (!accountHolder) {
-        showFieldError('accountHolder', 'Account holder name is required');
-        hasErrors = true;
-      }
+      if (hasErrors) return;
 
-      if (!account) {
-        showFieldError('account', 'Bank account number is required');
-        hasErrors = true;
-      }
+      const profileData = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        mobile: mobile,
+        country: country
+      };
 
-      if (!confirmAccount) {
-        showFieldError('confirmAccount', 'Confirm account number is required');
-        hasErrors = true;
-      } else if (account !== confirmAccount) {
-        showFieldError('confirmAccount', 'Account numbers do not match');
-        hasErrors = true;
-      }
-
-      if (!ifsc) {
-        showFieldError('ifsc', 'Bank code is required');
-        hasErrors = true;
-      }
-
-      if (!country) {
-        showFieldError('country', 'Country is required');
-        hasErrors = true;
-      }
-
-      if (hasErrors) {
-        return;
-      }
-
-      // Save profile to database
-      const customerId = getCustomerId();
-      if (!customerId) return;
-
-      console.log('Updating customer profile for ID:', customerId);
-
+      // Update profile in database
+      const token = localStorage.getItem('token');
       fetch(`http://localhost:3001/api/customers/${customerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          mobile,
-          country
-        })
+        body: JSON.stringify(profileData)
       })
-        .then(async response => {
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.error || data.message || 'Failed to update profile');
-          }
-          return data;
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to update profile');
+          return response.json();
         })
-        .then(data => {
-          console.log('Profile updated successfully:', data);
-          // Update view mode with new data
-          document.getElementById('viewName').textContent = firstName + ' ' + lastName;
-          document.getElementById('viewEmail').textContent = email;
-          document.getElementById('viewMobile').textContent = mobile;
-          document.getElementById('viewAccountHolder').textContent = accountHolder;
-          document.getElementById('viewAccount').textContent = '**** **** **** ' + account.slice(-4);
-          document.getElementById('viewIfsc').textContent = ifsc;
-          document.getElementById('viewCountry').textContent = country;
+        .then(updatedData => {
+          // Show success message
+          document.getElementById("successMsg").style.display = "block";
 
-          alert("Profile updated successfully!");
-          toggleEditMode();
+          // Hide message after 2 seconds
+          setTimeout(() => {
+            document.getElementById("successMsg").style.display = "none";
+          }, 2000);
+
+          console.log('Profile updated successfully:', updatedData);
         })
         .catch(err => {
           console.error('Error updating profile:', err);
-          alert('Failed to update profile: ' + err.message);
+          alert('Failed to update profile. Please try again.');
         });
     }
   </script>
+
 
 </body>
 
