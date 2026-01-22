@@ -375,9 +375,11 @@
 <body>
     <!-- Header -->
     <header>
-        <a href="index.html" class="logo">GoMint</a>
+        <a href="customerDashboard.html" class="logo">GoMint</a>
         <nav>
-            <a href="customercashBackReward.html">Back to Rewards</a>
+            <a href="customerDashboard.html">Dashboard</a>
+            <a href="customerProfile.html">Profile</a>
+            <a href="index.html">Logout</a>
         </nav>
     </header>
 
@@ -401,6 +403,72 @@
 
     <!-- JavaScript -->
     <script>
+        // Extract customer ID from token
+        function getCustomerId() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'customerLogin.html';
+                return null;
+            }
+            try {
+                const decoded = JSON.parse(atob(token));
+                return decoded.sub;
+            } catch (err) {
+                console.error('Failed to decode token:', err);
+                localStorage.removeItem('token');
+                window.location.href = 'customerLogin.html';
+                return null;
+            }
+        }
+
+        // Validate profile and bank details
+        function validateUserCompletion() {
+            const customerId = getCustomerId();
+            if (!customerId) return;
+
+            const token = localStorage.getItem('token');
+            fetch(`http://localhost:3001/api/customers/${customerId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch profile');
+                    return response.json();
+                })
+                .then(profileData => {
+                    // Check if profile and bank details are complete
+                    const hasProfileDetails = profileData.firstName &&
+                        profileData.lastName &&
+                        profileData.email &&
+                        profileData.mobile;
+
+                    const hasBankDetails = profileData.bankDetails &&
+                        Object.keys(profileData.bankDetails).length > 0;
+
+                    if (!hasProfileDetails || !hasBankDetails) {
+                        // Show warning message and redirect
+                        const container = document.getElementById('contentContainer');
+                        container.innerHTML = `
+                          <div class="empty-state" style="text-align: center;">
+                            <h2>⚠️ Profile Incomplete</h2>
+                            <p>Please complete your profile and add bank details to request cashback.</p>
+                            <a href="customerProfile.html" class="btn-primary">Complete Profile</a>
+                          </div>
+                        `;
+                        return;
+                    }
+
+                    // Profile is complete, load requests
+                    loadRequests();
+                })
+                .catch(err => {
+                    console.error('Error validating profile:', err);
+                    loadRequests(); // Fallback to load requests anyway
+                });
+        }
+
         // Load requests from localStorage or use sample data
         function getRequests() {
             const storedRequests = JSON.parse(localStorage.getItem('cashbackRequests') || '[]');
@@ -534,7 +602,8 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            loadRequests();
+            // Validate profile and bank details before loading requests
+            validateUserCompletion();
 
             // Close modal when clicking overlay
             document.getElementById('modalOverlay').addEventListener('click', (e) => {

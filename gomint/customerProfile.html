@@ -181,6 +181,7 @@
   <header>
     <div class="logo">GoMint</div>
     <nav>
+      <a href="customerDashboard.html">Dashboard</a>
       <a href="customerCashBackReward.html">My Rewards</a>
       <a href="index.html">Logout</a>
     </nav>
@@ -188,23 +189,10 @@
 
   <div class="container">
 
-    <!-- VIEW MODE -->
-    <div id="viewMode" style="display:none">
-      <h2>Profile Summary</h2>
-      <p><strong>First Name:</strong> <span id="viewFirstName">-</span></p>
-      <p><strong>Last Name:</strong> <span id="viewLastName">-</span></p>
-      <p><strong>Email:</strong> <span id="viewEmail">-</span></p>
-      <p><strong>Mobile:</strong> <span id="viewMobile">-</span></p>
-      <p><strong>Country:</strong> <span id="viewCountry">-</span></p>
-
-      <div class="button-row">
-        <button class="btn btn-primary" onclick="toggleEditMode()">Edit Profile</button>
-      </div>
-    </div>
-
-    <!-- EDIT MODE -->
-    <div id="editMode">
+    <!-- FIRST-TIME MODE: Profile - On First Time Login (No Details Submitted) -->
+    <div id="firstTimeMode" style="display:none">
       <h1>My Profile</h1>
+      <p style="text-align:center; color:#666; margin-bottom:2rem;">Please complete your profile to continue</p>
 
       <form id="profileForm">
 
@@ -244,42 +232,95 @@
           </select>
         </div>
 
-        <hr style="margin:2rem 0">
+        <p id="successMsg" style="display:none; color:green; text-align:center; margin-top:1rem;">
+          Profile updated successfully
+        </p>
 
-        <h2>Bank Details</h2>
-        <p style="text-align:center;margin-bottom:1.5rem;">Add new bank details</p>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>A/c Holder Name</label>
-            <input />
-          </div>
-          <div class="form-group">
-            <label>Bank Name</label>
-            <input />
-          </div>
+        <div class="button-row">
+          <button type="button" class="btn btn-primary" onclick="updateProfile()">Save & Continue</button>
         </div>
 
+      </form>
+    </div>
+
+    <!-- UPDATED MODE: Profile - On Details Updated -->
+    <div id="updatedMode" style="display:none">
+      <h1>My Profile</h1>
+
+      <!-- Profile Summary (View Only) -->
+      <div
+        style="border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; background: #f9fafb;">
+        <h2 style="margin-bottom: 1rem; font-size: 1rem;">Profile Information</h2>
+        <p style="margin: 0.5rem 0;"><strong>First Name:</strong> <span id="viewFirstName">-</span></p>
+        <p style="margin: 0.5rem 0;"><strong>Last Name:</strong> <span id="viewLastName">-</span></p>
+        <p style="margin: 0.5rem 0;"><strong>Email:</strong> <span id="viewEmail">-</span></p>
+        <p style="margin: 0.5rem 0;"><strong>Mobile:</strong> <span id="viewMobile">-</span></p>
+        <p style="margin: 0.5rem 0;"><strong>Country:</strong> <span id="viewCountry">-</span></p>
+      </div>
+
+      <!-- Bank Details Summary (View Only) -->
+      <div
+        style="border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; background: #f9fafb;">
+        <h2 style="margin-bottom: 1rem; font-size: 1rem;">Bank Details</h2>
+        <div id="bankDetailsEmpty" style="text-align: center;">
+          <p style="color: #999; margin: 1rem 0;">No bank details added</p>
+          <button type="button" class="btn btn-secondary" onclick="window.location.href='customerBankDetails.html'">
+            Add Bank Details
+          </button>
+        </div>
+        <div id="bankDetailsView" style="display:none;">
+          <p style="margin: 0.5rem 0;"><strong>A/c Holder:</strong> <span id="viewAcctHolder">-</span></p>
+          <p style="margin: 0.5rem 0;"><strong>Bank Name:</strong> <span id="viewBankName">-</span></p>
+          <p style="margin: 0.5rem 0;"><strong>A/c Number:</strong> <span id="viewAcctNumber">-</span></p>
+          <p style="margin: 0.5rem 0;"><strong>Bank Code:</strong> <span id="viewIfsc">-</span></p>
+          <p style="margin: 0.5rem 0;"><strong>Location:</strong> <span id="viewBankLocation">-</span></p>
+          <button type="button" class="btn btn-secondary" onclick="window.location.href='customerBankDetails.html'"
+            style="margin-top: 1rem; width: 100%;">
+            Edit Bank Details
+          </button>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button type="button" class="btn btn-primary" onclick="enterEditMode()">Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- EDIT MODE: Editable Profile Form -->
+    <div id="editMode" style="display:none">
+      <h1>Edit Profile</h1>
+
+      <form id="profileEditForm">
+
         <div class="form-row">
           <div class="form-group">
-            <label>A/c Number</label>
-            <input />
+            <label>First Name<span class="required">*</span></label>
+            <input id="editFirstName" />
+            <div class="error-message">This field is required</div>
           </div>
           <div class="form-group">
-            <label>Confirm A/c Number</label>
-            <input />
+            <label>Last Name<span class="required">*</span></label>
+            <input id="editLastName" />
+            <div class="error-message">This field is required</div>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Bank Code (IFSC/Routing/Swift)</label>
-          <input />
+          <label>Email<span class="required">*</span></label>
+          <input id="editEmail" />
+          <div class="error-message">This field is required</div>
         </div>
 
         <div class="form-group">
-          <label>Bank Location</label>
-          <select>
-            <option>Select Country</option>
+          <label>Mobile Number<span class="required">*</span></label>
+          <input id="editMobile" />
+          <div class="error-message">This field is required</div>
+        </div>
+
+        <div class="form-group">
+          <label>Select Country</label>
+          <select id="editCountry">
+            <option value="">Select Country</option>
             <option>India</option>
             <option>United States</option>
             <option>United Kingdom</option>
@@ -287,16 +328,15 @@
           </select>
         </div>
 
-        <p id="successMsg" style="display:none; color:green; text-align:center; margin-top:1rem;">
+        <p id="successMsgEdit" style="display:none; color:green; text-align:center; margin-top:1rem;">
           Profile updated successfully
         </p>
 
-
         <div class="button-row">
-          <button type="button" class="btn btn-primary" onclick="updateProfile()">Update Profile</button>
-          <button type="button" class="btn btn-primary" onclick="window.location.href='customerBankDetails.html'">
-            Add Bank Details
-          </button>
+          <button type="button" class="btn btn-primary" onclick="saveEditProfile()" style="margin-bottom: 0.5rem;">Save
+            Changes</button>
+          <button type="button" class="btn btn-secondary" onclick="cancelEditMode()"
+            style="margin-bottom: 0;">Cancel</button>
         </div>
 
       </form>
@@ -323,13 +363,19 @@
       }
     }
 
+    // Check if profile details are complete
+    function hasProfileDetails(profileData) {
+      return profileData &&
+        profileData.firstName &&
+        profileData.lastName &&
+        profileData.email &&
+        profileData.mobile;
+    }
+
     // Load profile data on page load
     window.onload = function () {
       const customerId = getCustomerId();
       if (!customerId) return;
-
-      // Get mobile from localStorage for pre-fill
-      const savedMobile = localStorage.getItem('mobile');
 
       const token = localStorage.getItem('token');
       fetch(`http://localhost:3001/api/customers/${customerId}`, {
@@ -343,18 +389,203 @@
           return response.json();
         })
         .then(profileData => {
-          // Pre-fill form fields
-          document.getElementById('firstName').value = profileData.firstName || '';
-          document.getElementById('lastName').value = profileData.lastName || '';
-          document.getElementById('email').value = profileData.email || '';
-          document.getElementById('mobile').value = profileData.mobile || savedMobile || '';
-          document.getElementById('country').value = profileData.country || '';
+          // Check if profile is complete
+          if (hasProfileDetails(profileData)) {
+            // UPDATED MODE: Show view-only profile with edit option
+            displayUpdatedMode(profileData);
+          } else {
+            // FIRST-TIME MODE: Show form to fill in details
+            displayFirstTimeMode();
+          }
+        })
+        .catch(err => {
+          console.error('Error loading profile:', err);
+          displayFirstTimeMode();
+        });
+    }
+
+    // Display first-time profile entry mode
+    function displayFirstTimeMode() {
+      document.getElementById('firstTimeMode').style.display = 'block';
+      document.getElementById('updatedMode').style.display = 'none';
+      document.getElementById('editMode').style.display = 'none';
+
+      // Auto-fill mobile from localStorage (verified from login)
+      const savedMobile = localStorage.getItem('mobile');
+      if (savedMobile) {
+        document.getElementById('mobile').value = savedMobile;
+      }
+    }
+
+    // Display profile view with edit options
+    function displayUpdatedMode(profileData) {
+      document.getElementById('firstTimeMode').style.display = 'none';
+      document.getElementById('updatedMode').style.display = 'block';
+      document.getElementById('editMode').style.display = 'none';
+
+      // Populate view-only fields
+      document.getElementById('viewFirstName').textContent = profileData.firstName || '-';
+      document.getElementById('viewLastName').textContent = profileData.lastName || '-';
+      document.getElementById('viewEmail').textContent = profileData.email || '-';
+      document.getElementById('viewMobile').textContent = profileData.mobile || '-';
+      document.getElementById('viewCountry').textContent = profileData.country || '-';
+
+      // Check for bank details
+      if (profileData.bankDetails && Object.keys(profileData.bankDetails).length > 0) {
+        displayBankDetailsView(profileData.bankDetails);
+      } else {
+        displayBankDetailsEmpty();
+      }
+    }
+
+    // Display bank details view
+    function displayBankDetailsView(bankData) {
+      document.getElementById('bankDetailsEmpty').style.display = 'none';
+      document.getElementById('bankDetailsView').style.display = 'block';
+
+      document.getElementById('viewAcctHolder').textContent = bankData.acctHolder || '-';
+      document.getElementById('viewBankName').textContent = bankData.bankName || '-';
+      document.getElementById('viewAcctNumber').textContent = bankData.acctNumber ? '****' + bankData.acctNumber.slice(-4) : '-';
+      document.getElementById('viewIfsc').textContent = bankData.ifsc || '-';
+      document.getElementById('viewBankLocation').textContent = `${bankData.state || ''} ${bankData.country || ''}`.trim() || '-';
+    }
+
+    // Display empty bank details message
+    function displayBankDetailsEmpty() {
+      document.getElementById('bankDetailsEmpty').style.display = 'block';
+      document.getElementById('bankDetailsView').style.display = 'none';
+    }
+
+    // Enter edit mode from updated view
+    function enterEditMode() {
+      const customerId = getCustomerId();
+      if (!customerId) return;
+
+      const token = localStorage.getItem('token');
+      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch profile');
+          return response.json();
+        })
+        .then(profileData => {
+          // Pre-fill edit form with current data
+          document.getElementById('editFirstName').value = profileData.firstName || '';
+          document.getElementById('editLastName').value = profileData.lastName || '';
+          document.getElementById('editEmail').value = profileData.email || '';
+
+          // Auto-fill mobile from localStorage (verified from login)
+          const savedMobile = localStorage.getItem('mobile');
+          if (savedMobile) {
+            document.getElementById('editMobile').value = savedMobile;
+          } else if (profileData.mobile) {
+            document.getElementById('editMobile').value = profileData.mobile;
+          }
+
+          document.getElementById('editCountry').value = profileData.country || '';
+
+          // Show edit mode
+          document.getElementById('firstTimeMode').style.display = 'none';
+          document.getElementById('updatedMode').style.display = 'none';
+          document.getElementById('editMode').style.display = 'block';
         })
         .catch(err => {
           console.error('Error loading profile:', err);
         });
     }
 
+    // Cancel edit mode
+    function cancelEditMode() {
+      document.getElementById('editMode').style.display = 'none';
+      document.getElementById('updatedMode').style.display = 'block';
+    }
+
+    // Save edited profile
+    function saveEditProfile() {
+      const customerId = getCustomerId();
+      if (!customerId) return;
+
+      const firstName = document.getElementById('editFirstName').value.trim();
+      const lastName = document.getElementById('editLastName').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const mobile = document.getElementById('editMobile').value.trim();
+      const country = document.getElementById('editCountry').value;
+
+      // Clear previous errors
+      document.querySelectorAll('#editMode input, #editMode select').forEach(field => {
+        field.classList.remove('error');
+        field.parentElement.querySelector('.error-message')?.classList.remove('show');
+      });
+
+      let hasErrors = false;
+
+      // Validation
+      if (!firstName) {
+        document.getElementById('editFirstName').classList.add('error');
+        document.getElementById('editFirstName').parentElement.querySelector('.error-message').classList.add('show');
+        hasErrors = true;
+      }
+
+      if (!lastName) {
+        document.getElementById('editLastName').classList.add('error');
+        document.getElementById('editLastName').parentElement.querySelector('.error-message').classList.add('show');
+        hasErrors = true;
+      }
+
+      if (!email) {
+        document.getElementById('editEmail').classList.add('error');
+        document.getElementById('editEmail').parentElement.querySelector('.error-message').classList.add('show');
+        hasErrors = true;
+      }
+
+      if (!mobile) {
+        document.getElementById('editMobile').classList.add('error');
+        document.getElementById('editMobile').parentElement.querySelector('.error-message').classList.add('show');
+        hasErrors = true;
+      }
+
+      if (hasErrors) return;
+
+      const profileData = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        mobile: mobile,
+        country: country
+      };
+
+      const token = localStorage.getItem('token');
+      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData)
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to update profile');
+          return response.json();
+        })
+        .then(updatedData => {
+          document.getElementById('successMsgEdit').style.display = 'block';
+
+          setTimeout(() => {
+            document.getElementById('successMsgEdit').style.display = 'none';
+            displayUpdatedMode(updatedData);
+          }, 1500);
+        })
+        .catch(err => {
+          console.error('Error updating profile:', err);
+          alert('Failed to update profile. Please try again.');
+        });
+    }
+
+    // Update profile (First-time entry)
     function updateProfile() {
       const customerId = getCustomerId();
       if (!customerId) return;
@@ -366,14 +597,14 @@
       const country = document.getElementById('country').value;
 
       // Clear previous errors
-      document.querySelectorAll('input, select').forEach(field => {
+      document.querySelectorAll('#profileForm input, #profileForm select').forEach(field => {
         field.classList.remove('error');
         field.parentElement.querySelector('.error-message')?.classList.remove('show');
       });
 
       let hasErrors = false;
 
-      // Validation with field highlighting
+      // Validation
       if (!firstName) {
         document.getElementById('firstName').classList.add('error');
         document.getElementById('firstName').parentElement.querySelector('.error-message').classList.add('show');
@@ -408,7 +639,6 @@
         country: country
       };
 
-      // Update profile in database
       const token = localStorage.getItem('token');
       fetch(`http://localhost:3001/api/customers/${customerId}`, {
         method: 'PUT',
@@ -423,15 +653,12 @@
           return response.json();
         })
         .then(updatedData => {
-          // Show success message
-          document.getElementById("successMsg").style.display = "block";
+          document.getElementById('successMsg').style.display = 'block';
 
-          // Hide message after 2 seconds
           setTimeout(() => {
-            document.getElementById("successMsg").style.display = "none";
-          }, 2000);
-
-          console.log('Profile updated successfully:', updatedData);
+            document.getElementById('successMsg').style.display = 'none';
+            displayUpdatedMode(updatedData);
+          }, 1500);
         })
         .catch(err => {
           console.error('Error updating profile:', err);

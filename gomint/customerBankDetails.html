@@ -244,6 +244,7 @@
     <header>
         <div class="logo">GoMint</div>
         <nav>
+            <a href="customerDashboard.html">Dashboard</a>
             <a href="customerProfile.html">Profile</a>
             <a href="index.html">Logout</a>
         </nav>
@@ -251,22 +252,26 @@
 
     <div class="container">
 
-        <h1>Edit Bank Details</h1>
+        <h1 id="pageTitle">Add Bank Details</h1>
         <div class="profile-name"></div>
 
         <!-- PROFILE SUMMARY -->
         <div class="profile-summary">
             <p><strong>Email:</strong> <span id="summaryEmail">-</span></p>
-            <p><strong>Mobile Number:</strong> <span id="summaryMobile">-</span></p>
+            <p><strong>Mobile Number (Verified):</strong> <span id="summaryMobile">-</span> 🔒</p>
 
             <hr style="margin:1rem 0">
 
-            <p><strong>Bank:</strong> <span id="summaryBank">-</span></p>
-            <p><strong>A/c Holder:</strong> <span id="summaryAcctHolder">-</span></p>
-            <p><strong>Account Number:</strong> <span id="summaryAcctNumber">-</span></p>
-            <p><strong>Bank Code (IFSC/Routing/Swift):</strong> <span id="summaryIfsc">-</span></p>
-            <p><strong>Location:</strong> <span id="summaryLocation">-</span></p>
-            <p><strong>Last Updated:</strong> <span id="summaryLastUpdated">-</span></p>
+            <p id="bankSummaryLabel" style="text-align: center; color: #999; margin: 1rem 0;">No bank details added yet
+            </p>
+            <div id="bankSummaryDetails" style="display: none;">
+                <p><strong>Bank:</strong> <span id="summaryBank">-</span></p>
+                <p><strong>A/c Holder:</strong> <span id="summaryAcctHolder">-</span></p>
+                <p><strong>Account Number:</strong> <span id="summaryAcctNumber">-</span></p>
+                <p><strong>Bank Code (IFSC/Routing/Swift):</strong> <span id="summaryIfsc">-</span></p>
+                <p><strong>Location:</strong> <span id="summaryLocation">-</span></p>
+                <p><strong>Last Updated:</strong> <span id="summaryLastUpdated">-</span></p>
+            </div>
         </div>
 
         <!-- EDIT FORM -->
@@ -328,9 +333,13 @@
                 </div>
             </div>
 
+            <p id="successMsg" style="display:none; color:green; text-align:center; margin-top:1rem;">
+                Bank details updated successfully
+            </p>
+
             <div class="button-row">
-                <button type="button" class="btn-primary" onclick="saveBankDetails()">
-                    Update Bank Details
+                <button type="button" class="btn-primary" id="submitBtn" onclick="saveBankDetails()">
+                    Add Bank Details
                 </button>
             </div>
 
@@ -348,9 +357,8 @@
             }
 
             try {
-                // Token is stored as btoa(JSON) from login
                 const decoded = JSON.parse(atob(token));
-                return decoded.sub; // sub contains the customer ID
+                return decoded.sub;
             } catch (err) {
                 console.error('Failed to decode token:', err);
                 localStorage.removeItem('token');
@@ -364,7 +372,6 @@
             const customerId = getCustomerId();
             if (!customerId) return;
 
-            // Load profile data from API
             const token = localStorage.getItem('token');
             fetch(`http://localhost:3001/api/customers/${customerId}`, {
                 method: 'GET',
@@ -377,34 +384,42 @@
                     return response.json();
                 })
                 .then(profileData => {
-                    // Store profile data in localStorage for later use
-                    localStorage.setItem('profile', JSON.stringify(profileData));
-
                     // Update profile name
                     const fullName = `${profileData.firstName || ''} ${profileData.lastName || ''}`.trim();
                     document.querySelector('.profile-name').textContent = fullName || 'Customer';
 
-                    // Load bank data from API or localStorage
-                    let bankData = {};
-                    if (profileData.bankDetails) {
-                        bankData = profileData.bankDetails;
+                    // Update profile summary with mobile from localStorage (verified from login)
+                    document.getElementById('summaryEmail').textContent = profileData.email || '-';
+                    const savedMobile = localStorage.getItem('mobile') || profileData.mobile || '-';
+                    document.getElementById('summaryMobile').textContent = savedMobile;
+
+                    // Check if bank details exist
+                    const hasBankDetails = profileData.bankDetails && Object.keys(profileData.bankDetails).length > 0;
+
+                    if (hasBankDetails) {
+                        // EDIT MODE: Display existing bank details and update button text
+                        document.getElementById('pageTitle').textContent = 'Edit Bank Details';
+                        document.getElementById('submitBtn').textContent = 'Update Bank Details';
+                        document.getElementById('bankSummaryLabel').style.display = 'none';
+                        document.getElementById('bankSummaryDetails').style.display = 'block';
+
+                        const bankData = profileData.bankDetails;
+                        document.getElementById('summaryBank').textContent = bankData.bankName || '-';
+                        document.getElementById('summaryAcctHolder').textContent = bankData.acctHolder || '-';
+                        document.getElementById('summaryAcctNumber').textContent = bankData.acctNumber ? '****' + bankData.acctNumber.slice(-4) : '-';
+                        document.getElementById('summaryIfsc').textContent = bankData.ifsc || '-';
+                        document.getElementById('summaryLocation').textContent = `${bankData.state || ''} ${bankData.country || ''}`.trim() || '-';
+                        document.getElementById('summaryLastUpdated').textContent = bankData.lastUpdated || new Date().toLocaleDateString();
                     } else {
-                        bankData = JSON.parse(localStorage.getItem('bank')) || {};
+                        // ADD MODE: Show empty message
+                        document.getElementById('pageTitle').textContent = 'Add Bank Details';
+                        document.getElementById('submitBtn').textContent = 'Add Bank Details';
+                        document.getElementById('bankSummaryLabel').style.display = 'block';
+                        document.getElementById('bankSummaryDetails').style.display = 'none';
                     }
 
-                    // Update profile summary with dynamic data from actual sources
-                    document.getElementById('summaryEmail').textContent = profileData.email || '-';
-                    document.getElementById('summaryMobile').textContent = profileData.mobile || '-';
-                    document.getElementById('summaryBank').textContent = bankData.bankName || '-';
-                    document.getElementById('summaryAcctHolder').textContent = bankData.acctHolder || '-';
-                    document.getElementById('summaryAcctNumber').textContent = bankData.acctNumber ? '****' + bankData.acctNumber.slice(-4) : '-';
-                    document.getElementById('summaryIfsc').textContent = bankData.ifsc || '-';
-                    document.getElementById('summaryLocation').textContent = `${bankData.state || ''} ${bankData.country || ''}`.trim() || '-';
-                    document.getElementById('summaryLastUpdated').textContent = bankData.lastUpdated || new Date().toLocaleDateString();
-
-                    // Do NOT pre-fill form fields - let user enter fresh data
-                    document.getElementById('country').value = '';
-                    document.getElementById('state').value = '';
+                    // Store profile data for later use
+                    window.currentProfileData = profileData;
                 })
                 .catch(err => {
                     console.error('Error loading profile:', err);
@@ -422,7 +437,6 @@
                 field.parentElement.querySelector('.error-message')?.classList.remove('show');
             });
 
-            const profileData = JSON.parse(localStorage.getItem('profile')) || {};
             const acctHolder = document.getElementById('acctHolder').value.trim();
             const bankName = document.getElementById('bankName').value.trim();
             const acctNumber = document.getElementById('acctNumber').value.trim();
@@ -484,13 +498,14 @@
                 lastUpdated: new Date().toLocaleDateString()
             };
 
-            // Save bank details and updated profile to database
+            // Prepare complete profile update with bank details
+            const profileData = window.currentProfileData || {};
             const profileUpdateData = {
                 firstName: profileData.firstName,
                 lastName: profileData.lastName,
                 email: profileData.email,
                 mobile: profileData.mobile,
-                country: country,
+                country: profileData.country,
                 bankDetails: bankData
             };
 
@@ -508,11 +523,14 @@
                     return response.json();
                 })
                 .then(updatedData => {
-                    // Store updated data in localStorage
-                    localStorage.setItem('bank', JSON.stringify(bankData));
-                    localStorage.setItem('profile', JSON.stringify(updatedData));
+                    // Show success message
+                    document.getElementById('successMsg').style.display = 'block';
 
-                    window.location.href = 'businessUpdateDetails.html';
+                    setTimeout(() => {
+                        document.getElementById('successMsg').style.display = 'none';
+                        // Redirect back to profile
+                        window.location.href = 'customerProfile.html';
+                    }, 1500);
                 })
                 .catch(err => {
                     console.error('Error saving bank details:', err);

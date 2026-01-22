@@ -21,7 +21,12 @@ router.get('/', async (req, res) => {
 // GET /api/customers/:id
 router.get('/:id', async (req, res) => {
   try {
-    // First try to find by customer ID
+    // First check in-memory cache
+    if (customersCache[req.params.id]) {
+      return res.json(customersCache[req.params.id]);
+    }
+
+    // Then try to find by customer ID
     let doc = await Customer.findById(req.params.id);
 
     // If not found, try to find by userId (for profile page that uses user ID)
@@ -134,7 +139,14 @@ router.put(
     if (!err.isEmpty()) return res.status(400).json({ errors: err.array() });
 
     try {
-      // First try to update by customer ID
+      // Check in-memory cache first
+      if (customersCache[req.params.id]) {
+        const updated = { ...customersCache[req.params.id], ...req.body };
+        customersCache[req.params.id] = updated;
+        return res.json(updated);
+      }
+
+      // Try to update by customer ID
       let updated = await Customer.findByIdAndUpdate(
         req.params.id,
         req.body,
