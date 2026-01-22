@@ -88,16 +88,24 @@ const PORT = process.env.PORT || 3000;
 async function start() {
   try {
     const uri = process.env.MONGO_URI;
-    if (!uri) throw new Error('MONGO_URI not set in .env');
+    if (!uri) {
+      console.warn('⚠️  MONGO_URI not set in .env - using in-memory mode');
+      // Continue without MongoDB
+    } else {
+      // Try to connect but don't block if it fails
+      mongoose.connect(uri, { serverSelectionTimeoutMS: 3000, socketTimeoutMS: 3000 })
+        .then(() => console.log('✓ Connected to MongoDB'))
+        .catch(err => console.warn('⚠️  MongoDB unavailable:', err.message));
+    }
 
-    await mongoose.connect(uri);
-    console.log('Connected to MongoDB');
+    // Continue with server startup immediately - don't wait for MongoDB
 
     // Optional: seed initial data
-    if (process.env.SEED === 'true') {
-      console.log('SEED=true — seeding initial data');
+    if (process.env.SEED === 'true' && uri) {
+      console.log('SEED=true — seeding initial data (will attempt after DB connects)');
 
       // Drop old indexes
+
       await mongoose.connection.db.collection('vendors').dropIndexes().catch(err => console.log('Drop indexes error:', err.message));
 
       // Clear collections

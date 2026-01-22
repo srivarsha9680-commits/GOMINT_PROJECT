@@ -328,6 +328,9 @@
       const customerId = getCustomerId();
       if (!customerId) return;
 
+      // Get mobile from localStorage for pre-fill
+      const savedMobile = localStorage.getItem('mobile');
+
       const token = localStorage.getItem('token');
       fetch(`http://localhost:3001/api/customers/${customerId}`, {
         method: 'GET',
@@ -344,7 +347,7 @@
           document.getElementById('firstName').value = profileData.firstName || '';
           document.getElementById('lastName').value = profileData.lastName || '';
           document.getElementById('email').value = profileData.email || '';
-          document.getElementById('mobile').value = profileData.mobile || '';
+          document.getElementById('mobile').value = profileData.mobile || savedMobile || '';
           document.getElementById('country').value = profileData.country || '';
         })
         .catch(err => {
