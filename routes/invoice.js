@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Invoice = require('../models/invoice');
+const CashbackRequest = require('../models/cashbackRequest');
 const auth = require('../middleware/auth');
 
 // GET /api/invoices
@@ -36,7 +37,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// PUT /api/invoices/:id
+// PUT /api/invoices/:id - Update invoice and sync cashback request status
 router.put('/:id', auth, async (req, res) => {
   try {
     const updated = await Invoice.findByIdAndUpdate(
@@ -45,6 +46,29 @@ router.put('/:id', auth, async (req, res) => {
       { new: true, runValidators: true }
     );
     if (!updated) return res.status(404).json({ message: 'Invoice not found' });
+
+    // THREE LANE CHECKPOINT: Sync status with cashback request if linked
+    if (updated.cashbackRequestId) {
+      const CashbackRequest = require('../models/cashbackRequest');
+
+      // Map invoice payment status to cashback request status
+      const statusMap = {
+        'pending': 'in-process',
+        'paid': 'paid',
+        'failed': 'rejected'
+      };
+
+      await CashbackRequest.findByIdAndUpdate(
+        updated.cashbackRequestId,
+        {
+          paymentStatus: updated.paymentStatus,
+          requestStatus: statusMap[updated.paymentStatus] || 'in-process',
+          updatedAt: new Date()
+        },
+        { new: true }
+      );
+    }
+
     res.json(updated);
   } catch (err) {
     res.status(400).json({ error: err.message });

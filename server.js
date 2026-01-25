@@ -28,6 +28,7 @@ app.use('/api/vendors', require('./routes/vendor'));
 app.use('/api/offers', require('./routes/offer'));
 app.use('/api/invoices', require('./routes/invoice'));
 app.use('/api/locations', require('./routes/location'));
+app.use('/api/cashback-requests', require('./routes/cashbackRequest')); // THREE LANE: Cashback request flow
 
 // AI Chat endpoint
 app.post('/api/ai/chat', async (req, res) => {

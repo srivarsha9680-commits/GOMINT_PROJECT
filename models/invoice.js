@@ -30,6 +30,17 @@ const invoiceSchema = new mongoose.Schema({
     ref: 'Vendor',
     required: true
   },
+  // THREE LANE CONNECTION: Link to cashback request
+  cashbackRequestId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CashbackRequest',
+    sparse: true
+  },
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer',
+    sparse: true
+  },
   operatorName: {
     type: String,
     trim: true
@@ -55,6 +66,10 @@ const invoiceSchema = new mongoose.Schema({
   },
   cashbackList: [cashbackItemSchema],
   createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
     type: Date,
     default: Date.now
   }
