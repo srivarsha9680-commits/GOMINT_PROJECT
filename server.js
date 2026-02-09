@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const path = require('path');
+const sequelize = require('./config/database');
 
+// Import PostgreSQL models
+const User = require('./models/userPostgres');
 
+// Keep MongoDB imports for other models (during migration)
+const mongoose = require('mongoose');
 const Vendor = require('./models/vendor');
 const Offer = require('./models/offer');
 const Customer = require('./models/customer');
@@ -22,7 +26,7 @@ app.use('/', express.static(path.join(__dirname, 'gomint')));
 app.use('/uploads', express.static('uploads'));
 
 // Mount API routes
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/authPostgres')); // PostgreSQL auth
 app.use('/api/customers', require('./routes/customer'));
 app.use('/api/vendors', require('./routes/vendor'));
 app.use('/api/offers', require('./routes/offer'));
@@ -88,6 +92,19 @@ const PORT = process.env.PORT || 3000;
 
 async function start() {
   try {
+    // Initialize PostgreSQL
+    console.log('Initializing PostgreSQL database...');
+    try {
+      await sequelize.authenticate();
+      console.log('✓ PostgreSQL connected');
+      await sequelize.sync({ alter: false });
+      console.log('✓ PostgreSQL database synchronized');
+    } catch (pgErr) {
+      console.warn('⚠️  PostgreSQL unavailable:', pgErr.message);
+      console.warn('Continuing without PostgreSQL...');
+    }
+
+    // Keep MongoDB for other models (during migration)
     const uri = process.env.MONGO_URI;
     if (!uri) {
       console.warn('⚠️  MONGO_URI not set in .env - using in-memory mode');

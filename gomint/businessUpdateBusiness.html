@@ -146,7 +146,7 @@
     <main>
         <div class="form-container">
 
-           
+
             <p class="form-subtitle">
                 Modify your business details below. Please update all required fields.
             </p>
@@ -189,7 +189,7 @@
                 }
 
                 const response = await fetch(
-                    `http://localhost:3001/api/vendors/${vendorId}`,
+                    `http://localhost:3000/api/vendors/${vendorId}`,
                     {
                         method: 'PUT',
                         headers: {
@@ -225,7 +225,7 @@
             }
 
             await fetch(
-                `http://localhost:3001/api/vendors/${vendorId}`,
+                `http://localhost:3000/api/vendors/${vendorId}`,
                 {
                     method: 'DELETE',
                     headers: {

@@ -378,7 +378,7 @@
       if (!customerId) return;
 
       const token = localStorage.getItem('token');
-      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+      fetch(`http://localhost:3000/api/customers/${customerId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -462,7 +462,7 @@
       if (!customerId) return;
 
       const token = localStorage.getItem('token');
-      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+      fetch(`http://localhost:3000/api/customers/${customerId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -559,7 +559,7 @@
       };
 
       const token = localStorage.getItem('token');
-      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+      fetch(`http://localhost:3000/api/customers/${customerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -640,7 +640,7 @@
       };
 
       const token = localStorage.getItem('token');
-      fetch(`http://localhost:3001/api/customers/${customerId}`, {
+      fetch(`http://localhost:3000/api/customers/${customerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
